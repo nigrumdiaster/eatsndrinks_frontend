@@ -1,0 +1,180 @@
+{
+    "tabList": [
+        "Burgers",
+        "Pizzas",
+        "Drinks"
+    ],
+    "tabPanel": [
+        [
+            {
+                "id": 1,
+                "name": "Cheese Burger",
+                "slug": "cheese-burger",
+                "description": "Tasty cheeseburger",
+                "price": 5.99,
+                "is_sale": false,
+                "primary_image": "/images/burger1.jpg"
+            },
+            {
+                "id": 2,
+                "name": "Chicken Burger",
+                "slug": "chicken-burger",
+                "description": "Spicy chicken burger",
+                "price": 6.99,
+                "is_sale": true,
+                "sale_price": 5.49,
+                "primary_image": "/images/burger2.jpg"
+            },
+            {
+                "id": 3,
+                "name": "Beef Burger",
+                "slug": "beef-burger",
+                "description": "Juicy beef burger",
+                "price": 7.99,
+                "is_sale": false,
+                "primary_image": "/images/burger3.jpg"
+            }
+        ],
+        [
+            {
+                "id": 4,
+                "name": "Pepperoni Pizza",
+                "slug": "pepperoni-pizza",
+                "description": "Classic pepperoni",
+                "price": 8.99,
+                "is_sale": true,
+                "sale_price": 7.49,
+                "primary_image": "/images/pizza1.jpg"
+            },
+            {
+                "id": 5,
+                "name": "Margherita Pizza",
+                "slug": "margherita-pizza",
+                "description": "Tomato and mozzarella",
+                "price": 7.99,
+                "is_sale": false,
+                "primary_image": "/images/pizza2.jpg"
+            },
+            {
+                "id": 6,
+                "name": "BBQ Chicken Pizza",
+                "slug": "bbq-chicken-pizza",
+                "description": "BBQ sauce & chicken",
+                "price": 9.99,
+                "is_sale": false,
+                "primary_image": "/images/pizza3.jpg"
+            }
+        ],
+        [
+            {
+                "id": 7,
+                "name": "Coca Cola",
+                "slug": "coca-cola",
+                "description": "Refreshing cola",
+                "price": 1.99,
+                "is_sale": false,
+                "primary_image": "/images/drink1.jpg"
+            },
+            {
+                "id": 8,
+                "name": "Sprite",
+                "slug": "sprite",
+                "description": "Lemon-lime soda",
+                "price": 1.99,
+                "is_sale": false,
+                "primary_image": "/images/drink2.jpg"
+            },
+            {
+                "id": 9,
+                "name": "Iced Tea",
+                "slug": "iced-tea",
+                "description": "Refreshing iced tea",
+                "price": 1.99,
+                "is_sale": false,
+                "primary_image": "/images/drink3.jpg"
+            }
+        ]
+    ],
+    "recommendedProducts": [
+        {
+            "id": 1,
+            "name": "Cheese Burger",
+            "slug": "cheese-burger",
+            "description": "A delicious cheese burger with fresh ingredients.",
+            "primary_image": "/images/products/cheese-burger.jpg",
+            "price": 8.99,
+            "is_sale": true,
+            "sale_price": 7.49
+        },
+        {
+            "id": 2,
+            "name": "Pepperoni Pizza",
+            "slug": "pepperoni-pizza",
+            "description": "Classic pepperoni pizza with extra cheese.",
+            "primary_image": "/images/products/pepperoni-pizza.jpg",
+            "price": 12.99,
+            "is_sale": false,
+            "sale_price": null
+        },
+        {
+            "id": 3,
+            "name": "Grilled Chicken Sandwich",
+            "slug": "grilled-chicken-sandwich",
+            "description": "Grilled chicken sandwich with fresh lettuce and tomatoes.",
+            "primary_image": "/images/products/grilled-chicken.jpg",
+            "price": 9.99,
+            "is_sale": true,
+            "sale_price": 8.49
+        },
+        {
+            "id": 4,
+            "name": "French Fries",
+            "slug": "french-fries",
+            "description": "Crispy golden french fries served with ketchup.",
+            "primary_image": "/images/products/french-fries.jpg",
+            "price": 4.99,
+            "is_sale": false,
+            "sale_price": null
+        },
+        {
+            "id": 5,
+            "name": "Chocolate Milkshake",
+            "slug": "chocolate-milkshake",
+            "description": "Thick chocolate milkshake with whipped cream topping.",
+            "primary_image": "/images/products/chocolate-milkshake.jpg",
+            "price": 5.99,
+            "is_sale": false,
+            "sale_price": null
+        },
+        {
+            "id": 6,
+            "name": "Strawberry Smoothie",
+            "slug": "strawberry-smoothie",
+            "description": "Fresh strawberry smoothie with yogurt and honey.",
+            "primary_image": "/images/products/strawberry-smoothie.jpg",
+            "price": 6.99,
+            "is_sale": false,
+            "sale_price": null
+        },
+        {
+            "id": 7,
+            "name": "Iced Tea",
+            "slug": "iced-tea",
+            "description": "Refreshing iced tea with lemon slices and mint leaves.",
+            "primary_image": "/images/products/iced-tea.jpg",
+            "price": 3.99,
+            "is_sale": false,
+            "sale_price": null
+        },
+        {
+            "id": 8,
+            "name": "Mango Sorbet",
+            "slug": "mango-sorbet",
+            "description": "Sweet mango sorbet with fresh mango chunks.",
+            "primary_image": "/images/products/mango-sorbet.jpg",
+            "price": 7.99,
+            "is_sale": false,
+            "sale_price": null
+        }
+    ]
+}
