@@ -5,8 +5,7 @@
     <Feature />
     <ProductTabs />
     <About />
-    <!-- 
-<Contact /> -->
+    <Contact />
   </div>
 </template>
 
