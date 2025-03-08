@@ -2,7 +2,7 @@
   <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4 transition-transform hover:scale-105">
     <div>
       <div class="w-full h-48 flex justify-center items-center bg-gray-100">
-        <img src="/images/preloader.png" :src="product.primary_image" alt="product-image"
+        <img src="/images/preloader.png" :src="product.mainimage" alt="product-image"
           class="w-full h-full object-cover">
       </div>
       <div class="p-4">
@@ -16,11 +16,7 @@
         </p>
         <div class="flex items-center justify-between mt-4">
           <div>
-            <h6 v-if="product.is_sale" class="text-red-500 font-semibold">
-              <del class="text-gray-400">{{ formatPrice(product.price) }}</del>
-              {{ formatPrice(product.sale_price) }}
-            </h6>
-            <h6 v-else class="text-gray-700 font-semibold">
+            <h6 class="text-gray-700 font-semibold">
               {{ formatPrice(product.price) }}
             </h6>
           </div>
