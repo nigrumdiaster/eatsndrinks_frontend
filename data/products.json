@@ -175,6 +175,16 @@
             "price": 7.99,
             "is_sale": false,
             "sale_price": null
+        },
+        {
+            "id": 9,
+            "name": "Orange Sorbet",
+            "slug": "orange-sorbet",
+            "description": "Sweet orange sorbet with fresh orange chunks.",
+            "primary_image": "/images/products/oragne-sorbet.jpg",
+            "price": 7.99,
+            "is_sale": false,
+            "sale_price": null
         }
     ]
 }

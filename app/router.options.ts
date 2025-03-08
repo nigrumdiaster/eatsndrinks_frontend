@@ -12,6 +12,11 @@ export default <RouterConfig>{
             name: 'about',
             path: '/about',
             component: () => import('~/pages/About.vue'),
+        },
+        {
+            name: 'detail',
+            path: '/detail',
+            component: () => import('~/pages/Detail.vue')
         }
     ]
 };
