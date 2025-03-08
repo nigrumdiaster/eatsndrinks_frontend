@@ -13,7 +13,7 @@
   
           <!-- Quick Links -->
 
-            <div>
+            <!-- <div>
                 <h3 class="text-xl font-semibold text-yellow-500">Quick Links</h3>
                 <ul class="mt-2 space-y-2 text-gray-300">
                     <li>
@@ -35,7 +35,7 @@
                         <NuxtLink to="/blog" class="text-gray-300">Blog</NuxtLink>
                     </li>
                 </ul>
-            </div>
+            </div> -->
 
 
         <!-- Contact Information -->
