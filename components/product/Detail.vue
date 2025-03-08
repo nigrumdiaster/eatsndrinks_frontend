@@ -9,7 +9,7 @@
                         :style="{ transform: `translateX(-${activeIndex * 100}%)` }">
                         <div v-for="(slide, index) in slides" :key="index" class="w-[400px] h-[400px] flex-shrink-0">
                             <img :src="slide" class="w-full h-full object-cover rounded-lg cursor-pointer"
-                                :alt="'slider-' + (index + 1)">
+                                :alt="'slider-' + (index + 1)" @click="zoomImage(slide)">
                         </div>
                     </div>
 
@@ -134,16 +134,16 @@ const setSlide = (index: number) => {
 
 
 
-const zoomedImage = ref(null)
-// Khi bấm vào ảnh, lưu lại URL của ảnh để hiển thị trong modal
-const zoomImage = (slide: null) => {
-    zoomedImage.value = slide
+const zoomedImage = ref<string | null>(null);
+
+const zoomImage = (slide: string) => {
+    zoomedImage.value = slide;  // Store a single image URL
 }
 
-// Đóng modal khi click vào vùng modal
 const closeZoom = () => {
-    zoomedImage.value = null
+    zoomedImage.value = null;
 }
+
 
 onMounted(async () => {
     try {

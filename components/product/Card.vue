@@ -7,7 +7,7 @@
       </div>
       <div class="p-4">
         <h5 class="text-lg font-semibold">
-          <NuxtLink :to="`/products/${product.slug}`" class="text-yellow-600 hover:underline">
+          <NuxtLink :to="`/product/${product.id}`" class="text-yellow-600 hover:underline">
             {{ product.name }}
           </NuxtLink>
         </h5>
@@ -46,4 +46,5 @@ function addToCart(product) {
 function formatPrice(price) {
   return `$${price.toFixed(2)}`;
 }
+
 </script>
