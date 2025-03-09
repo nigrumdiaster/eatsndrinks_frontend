@@ -31,16 +31,34 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 
 const props = defineProps(['product']);
-
-function addToCart(product) {
+interface ProductImage {
+  id: number;
+  image: string;
+  product: number;
+}
+interface Product {
+  pk: number;
+  name: string;
+  description: string;
+  mainimage: string;
+  is_active: boolean;
+  quantity: number;
+  price: string;
+  category: number;
+  created_at: string;
+  updated_at: string;
+  images: ProductImage[];
+}
+function addToCart(product: Product) {
   console.log(product);
 }
 
-function formatPrice(price) {
-  return `$${parseFloat(price).toFixed(2)}`;
+function formatPrice(price: string | number) {
+  return `$${parseFloat(price.toString()).toFixed(2)}`;
 }
+
 
 </script>
