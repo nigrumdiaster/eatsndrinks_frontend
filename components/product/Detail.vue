@@ -114,6 +114,7 @@ const slides = ref<string[]>([]);
 const activeIndex = ref<number>(0);
 const product = ref<Product | null>(null);
 const route = useRoute();
+const router = useRouter();
 const productId = route.params.id;
 
 const prevSlide = () => { 
@@ -145,7 +146,7 @@ const closeZoom = () => {
 }
 
 
-onMounted(async () => {
+const fetchProductData = async () => {
     try {
         const response = await fetch(`http://127.0.0.1:8000/catalogue/products/${productId}/`)
         if (!response.ok) {
@@ -168,6 +169,9 @@ onMounted(async () => {
         }
     } catch (error) {
         console.error(error)
+        router.push('/404e')
     }
-})
+}
+
+onMounted(fetchProductData)
 </script>
