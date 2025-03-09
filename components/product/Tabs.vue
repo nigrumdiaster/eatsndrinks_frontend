@@ -16,7 +16,7 @@
         </div>
 
         <div v-if="tabProduct.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-            <ProductCard v-for="product in tabProduct.slice(0, 3)" :key="product.pk" :product="product" />
+            <ProductCard v-for="productOfTab in tabProduct.slice(0, 3)" :key="productOfTab.pk" :product="productOfTab" />
         </div>
       </div>
 
@@ -96,6 +96,8 @@ const fetchProductsByCategory = async (categoryId: number) => {
     tabProduct.value = [];
   }
 };
+
+const fetchRandomProducts
 
 const changeTab = (index: number, categoryId: number) => {
   activeTab.value = index;
