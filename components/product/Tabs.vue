@@ -35,7 +35,7 @@
         <h2 class="text-2xl font-bold mb-6">Our Recommendations</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <ProductCard v-for="product in tabProduct" :key="product.pk" :product="product" />
+        <ProductCard v-for="product in randomProducts" :key="product.pk" :product="product" />
       </div>
     </div>
   </section>
@@ -94,6 +94,23 @@ const fetchProductsByCategory = async (categoryId: number) => {
   } catch (error) {
     console.error("Error fetching products:", error);
     tabProduct.value = [];
+  }
+};
+
+const randomProducts: Product[] = [];
+
+const fetchRandomProducts = async (): Promise<Product[]> => {
+  try {
+    const response = await fetch("/catalogue/products/");
+    if (!response.ok) {
+      throw new Error("Failed to fetch products");
+    }
+    const products: Product[] = await response.json();
+    randomProducts.push(...products);
+    return randomProducts;
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return randomProducts;
   }
 };
 
