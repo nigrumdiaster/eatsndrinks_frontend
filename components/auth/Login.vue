@@ -32,8 +32,9 @@
         <button
           type="submit"
           class="w-full bg-yellow-500 text-white py-2 rounded-lg hover:bg-yellow-600 transition"
+          :disabled="loading"
         >
-          Đăng nhập
+          {{ loading ? "Đang đăng nhập..." : "Đăng nhập" }}
         </button>
       </form>
 
@@ -48,36 +49,28 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useCookie } from "#app";
+import { useAuthStore } from "@/stores/auth"; // Import auth store
 import { useToast } from "vue-toastification";
 
 const username = ref("");
 const password = ref("");
-const router = useRouter();
+const loading = ref(false);
 
+const router = useRouter();
+const authStore = useAuthStore();
 const toast = useToast();
 
-const accessToken = useCookie("access_token");
-const refreshToken = useCookie("refresh_token");
-
 const handleLogin = async () => {
+  loading.value = true;
   try {
-    const response = await useApiFetch<{ detail: string; refresh: string; access: string }>("/users/login/", {
-      method: "POST",
-      body: JSON.stringify({
-        username: username.value,
-        password: password.value,
-      }),
-    });
-
-    accessToken.value = response.access;
-    refreshToken.value = response.refresh;
-
+    await authStore.login(username.value, password.value);
     toast.success("Đăng nhập thành công!");
     router.push("/");
   } catch (error) {
     console.error("Lỗi đăng nhập:", error);
     toast.error("Đăng nhập thất bại! Hãy kiểm tra lại tài khoản và mật khẩu.");
+  } finally {
+    loading.value = false;
   }
 };
 </script>

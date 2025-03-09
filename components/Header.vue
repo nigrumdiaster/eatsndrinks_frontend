@@ -22,15 +22,42 @@
               </li>
             </ul>
 
-            <!-- Cart & Login Placeholder -->
+            <!-- Right Side: Show Cart & User Info When Logged In -->
             <div class="flex items-center space-x-4">
-              <nuxt-link
+              <!-- Cart Button (Always Visible) -->
+              <nuxt-link v-if="isAuthenticated"
                 class="bg-white w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-800 transition"
                 to="/">
                 <img src="/icons/cart_fill_yellow.svg" alt="cart icon" class="w-7 h-7" />
               </nuxt-link>
-              <nuxt-link to="/login"
-                class="bg-yellow-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">Login</nuxt-link>
+
+              <!-- User Profile Dropdown (When Logged In) -->
+              <div v-if="isAuthenticated" class="relative">
+                <div @click="toggleDropdown" class="flex items-center cursor-pointer space-x-2">
+                  <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300">
+                    <i class="bi bi-person text-2xl text-gray-700"></i> <!-- Placeholder Avatar -->
+                  </div>
+                  <span class="text-gray-800 font-semibold">{{ user?.first_name }} {{ user?.last_name }}</span>
+                </div>
+
+                <!-- Dropdown Menu -->
+                <div v-if="dropdownOpen"
+                  class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 border border-gray-200 z-50">
+                  <NuxtLink to="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Hồ sơ</NuxtLink>
+                  <NuxtLink to="/settings" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Cài đặt</NuxtLink>
+                  <hr />
+                  <button @click="logout"
+                    class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">
+                    Đăng xuất
+                  </button>
+                </div>
+              </div>
+
+              <!-- Show Login Button When Not Logged In -->
+              <nuxt-link v-else to="/login"
+                class="bg-yellow-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">
+                Login
+              </nuxt-link>
             </div>
           </nav>
         </div>
@@ -40,14 +67,50 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { useAuthStore } from '@/stores/auth'; // Import Pinia store
 
+// Mobile Menu State
 const isMenuOpen = ref(false);
 
+// Navigation Menu Items
 const menuItems = [
   { label: "Home", path: "/" },
   { label: "Menu", path: "/" },
   { label: "About Us", path: "/about" },
   { label: "Contact Us", path: "/" }
 ];
+
+// Access Auth Store
+const authStore = useAuthStore();
+const isAuthenticated = computed(() => authStore.isAuthenticated);
+const user = computed(() => authStore.user);
+
+// Profile Dropdown State
+const dropdownOpen = ref(false);
+
+const toggleDropdown = () => {
+  dropdownOpen.value = !dropdownOpen.value;
+};
+
+// Logout Function
+const logout = () => {
+  authStore.logout();
+  dropdownOpen.value = false; // Close dropdown on logout
+};
+
+// Close dropdown when clicking outside
+const handleClickOutside = (event) => {
+  if (!event.target.closest(".relative")) {
+    dropdownOpen.value = false;
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("click", handleClickOutside);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
