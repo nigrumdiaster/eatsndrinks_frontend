@@ -24,10 +24,10 @@
 
             <!-- Cart & Login Placeholder -->
             <div class="flex items-center space-x-4">
-              <nuxt-link to="/cart">
+              <!-- <nuxt-link to="/">
                 <i class="bi bi-cart-fill text-gray-800 text-xl"></i>
-              </nuxt-link>
-              <nuxt-link to="/auth/login" class="btn-auth">Login</nuxt-link>
+              </nuxt-link> -->
+              <nuxt-link to="/" class="btn-auth">Login</nuxt-link>
             </div>
           </nav>
         </div>
@@ -43,9 +43,9 @@ const isMenuOpen = ref(false);
 
 const menuItems = [
   { label: "Home", path: "/" },
-  { label: "Menu", path: "/Menu" },
-  { label: "About Us", path: "/About-us" },
-  { label: "Contact Us", path: "/Contact-us" }
+  { label: "Menu", path: "/" },
+  { label: "About Us", path: "/" },
+  { label: "Contact Us", path: "/" }
 ];
 </script>
 

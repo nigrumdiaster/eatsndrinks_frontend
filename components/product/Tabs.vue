@@ -29,7 +29,7 @@
       </div>
 
       <div class="flex justify-center mt-8">
-        <NuxtLink to="/Menu" class="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition">
+        <NuxtLink to="/" class="bg-yellow-600 text-white px-6 py-3 rounded-lg hover:bg-yellow-700 transition">
           View Menu
         </NuxtLink>
       </div>
