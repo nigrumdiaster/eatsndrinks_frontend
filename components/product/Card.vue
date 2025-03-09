@@ -2,8 +2,8 @@
   <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4 transition-transform hover:scale-105">
     <div>
       <div class="w-full h-48 flex justify-center items-center bg-gray-100">
-        <img src="/images/preloader.png" :src="product.mainimage" alt="product-image"
-          class="w-full h-full object-cover">
+        <img v-if="product.mainimage" :src="product.mainimage" alt="product-image" class="w-full h-full object-cover" />
+        <img v-else src="/images/preloader.png" alt="loading" class="w-full h-full object-cover" />
       </div>
       <div class="p-4">
         <h5 class="text-lg font-semibold">
@@ -31,16 +31,34 @@
   </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 
 const props = defineProps(['product']);
-
-function addToCart(product) {
+interface ProductImage {
+  id: number;
+  image: string;
+  product: number;
+}
+interface Product {
+  pk: number;
+  name: string;
+  description: string;
+  mainimage: string;
+  is_active: boolean;
+  quantity: number;
+  price: string;
+  category: number;
+  created_at: string;
+  updated_at: string;
+  images: ProductImage[];
+}
+function addToCart(product: Product) {
   console.log(product);
 }
 
-function formatPrice(price) {
-  return `$${parseFloat(price).toFixed(2)}`;
+function formatPrice(price: string | number) {
+  return `$${parseFloat(price.toString()).toFixed(2)}`;
 }
+
 
 </script>

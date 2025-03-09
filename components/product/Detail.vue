@@ -148,11 +148,8 @@ const closeZoom = () => {
 
 const fetchProductData = async () => {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/catalogue/products/${productId}/`)
-        if (!response.ok) {
-            throw new Error('Lỗi khi lấy thông tin sản phẩm')
-        }
-        const data = await response.json()
+        const data  = await useApiFetch<Product>(`/catalogue/products/${productId}/`)
+        
         product.value = data
 
         // Xây dựng mảng slides gồm ảnh chính và các ảnh trong mảng images
