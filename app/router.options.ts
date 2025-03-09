@@ -22,7 +22,17 @@ export default <RouterConfig>{
             name: '404', 
             path: '/404e',
             component: () => import('~/pages/404Error.vue'),
-        }
+        },
+        {
+            name: 'login', 
+            path: '/login',
+            component: () => import('~/pages/auth/Login.vue'),
+        },
+        {
+            name: 'register', 
+            path: '/register',
+            component: () => import('~/pages/auth/Register.vue'),
+        },
         
 
     ]
