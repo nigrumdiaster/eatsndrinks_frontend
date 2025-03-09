@@ -37,6 +37,11 @@ export default <RouterConfig>{
             path: '/profile',
             component: () => import('~/pages/user/Profile.vue'),
         },
+        {
+            name: 'cart',
+            path: '/cart',
+            component: () => import('~/pages/user/Cart.vue'),
+        },
 
 
     ]

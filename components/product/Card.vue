@@ -32,6 +32,10 @@
 </template>
 
 <script lang="ts" setup>
+
+import { useCartStore } from "@/stores/cart";
+
+
 const props = defineProps(['product']);
 
 interface ProductImage {
@@ -54,11 +58,12 @@ interface Product {
   images: ProductImage[];
 }
 
-// Hàm thêm vào giỏ hàng
-function addToCart(product: Product) {
-  console.log(product);
-}
+const cartStore = useCartStore(); // Sử dụng store giỏ hàng
 
+// Hàm thêm vào giỏ hàng
+function addToCart(productId: number) {
+  cartStore.addToCart(productId, 1);
+}
 // Định dạng giá tiền VNĐ
 function formatPrice(price: string | number) {
   return parseFloat(price.toString()).toLocaleString("vi-VN", {

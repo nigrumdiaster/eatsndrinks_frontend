@@ -27,7 +27,7 @@
               <!-- Cart Button (Always Visible) -->
               <nuxt-link v-if="isAuthenticated"
                 class="bg-white w-12 h-12 flex items-center justify-center rounded-full hover:bg-gray-800 transition"
-                to="/">
+                to="/cart">
                 <img src="/icons/cart_fill_yellow.svg" alt="cart icon" class="w-7 h-7" />
               </nuxt-link>
 
