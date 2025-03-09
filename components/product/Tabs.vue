@@ -16,7 +16,7 @@
         </div>
 
         <div v-if="tabProduct.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-            <ProductCard v-for="product in tabProduct.slice(0, 3)" :key="product.pk" :product="product" />
+            <ProductCard v-for="product in tabProduct" :key="product.pk" :product="product" />
         </div>
       </div>
 
@@ -76,7 +76,7 @@ const categories = ref<Category[]>([]);
 
 const fetchCategories = async () => {
   try {
-    const data = await $fetch<Category[]>("http://127.0.0.1:8000/catalogue/categories/");
+    const data = await useApiFetch<Category[]>("/catalogue/categories/");
     if (Array.isArray(data)) {
       categories.value = data;
       tabName.value = data.map(category => category.name);
@@ -88,7 +88,7 @@ const fetchCategories = async () => {
 
 const fetchProductsByCategory = async (categoryId: number) => {
   try {
-    const data = await $fetch<Product[]>(`http://127.0.0.1:8000/catalogue/categories/${categoryId}/products/`);
+    const data = await useApiFetch<Product[]>(`/catalogue/categories/${categoryId}/products/?limit=3`);
     console.log(`Products for category ${categoryId}:`, data);
     tabProduct.value = data || [];
   } catch (error) {
@@ -96,6 +96,7 @@ const fetchProductsByCategory = async (categoryId: number) => {
     tabProduct.value = [];
   }
 };
+
 
 const changeTab = (index: number, categoryId: number) => {
   activeTab.value = index;

@@ -27,7 +27,7 @@
               <!-- <nuxt-link to="/">
                 <i class="bi bi-cart-fill text-gray-800 text-xl"></i>
               </nuxt-link> -->
-              <nuxt-link to="/" class="btn-auth">Login</nuxt-link>
+              <nuxt-link to="/" class="bg-yellow-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">Login</nuxt-link>
             </div>
           </nav>
         </div>
@@ -44,21 +44,8 @@ const isMenuOpen = ref(false);
 const menuItems = [
   { label: "Home", path: "/" },
   { label: "Menu", path: "/" },
-  { label: "About Us", path: "/" },
+  { label: "About Us", path: "/about" },
   { label: "Contact Us", path: "/" }
 ];
 </script>
 
-<style scoped>
-.btn-auth {
-  background-color: #f59e0b; /* bg-yellow-500 */
-  color: #ffffff; /* text-white */
-  padding: 0.5rem 1rem; /* px-4 py-2 */
-  border-radius: 0.375rem; /* rounded-md */
-  transition: all 0.2s;
-}
-
-.btn-auth:hover {
-  background-color: #1f2937; /* hover:bg-gray-800 */
-}
-</style>

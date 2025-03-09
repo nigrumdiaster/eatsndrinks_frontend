@@ -19,8 +19,8 @@ export default <RouterConfig>{
             component: () => import('~/pages/product/[id].vue'),
         },
         {
-            name: '404', // ✅ Dynamic route for product details
-            path: '/404e', // Dynamic segment ":id"
+            name: '404', 
+            path: '/404e',
             component: () => import('~/pages/404Error.vue'),
         }
         
