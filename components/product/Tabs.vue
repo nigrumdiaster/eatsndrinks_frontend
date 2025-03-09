@@ -15,8 +15,8 @@
           </button>
         </div>
 
-        <div v-if="product.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
-            <ProductCard v-for="product in product.slice(0, 3)" :key="product.pk" :product="product" />
+        <div v-if="tabProduct.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+            <ProductCard v-for="product in tabProduct.slice(0, 3)" :key="product.pk" :product="product" />
         </div>
       </div>
 
@@ -35,7 +35,7 @@
         <h2 class="text-2xl font-bold mb-6">Our Recommendations</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <ProductCard v-for="product in product" :key="product.pk" :product="product" />
+        <ProductCard v-for="product in tabProduct" :key="product.pk" :product="product" />
       </div>
     </div>
   </section>
@@ -71,7 +71,7 @@ interface Category {
 
 const activeTab = ref(0);
 const tabName = ref<string[]>([]);
-const product = ref<Product[]>([]);
+const tabProduct = ref<Product[]>([]);
 const categories = ref<Category[]>([]);
 
 const fetchCategories = async () => {
@@ -90,10 +90,10 @@ const fetchProductsByCategory = async (categoryId: number) => {
   try {
     const data = await $fetch<Product[]>(`http://127.0.0.1:8000/catalogue/categories/${categoryId}/products/`);
     console.log(`Products for category ${categoryId}:`, data);
-    product.value = data || [];
+    tabProduct.value = data || [];
   } catch (error) {
     console.error("Error fetching products:", error);
-    product.value = [];
+    tabProduct.value = [];
   }
 };
 
