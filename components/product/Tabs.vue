@@ -97,20 +97,16 @@ const fetchProductsByCategory = async (categoryId: number) => {
   }
 };
 
-const randomProducts: Product[] = [];
+const randomProducts = ref<Product[]>([]);
 
-const fetchRandomProducts = async (): Promise<Product[]> => {
+const fetchRandomProducts = async (): Promise<void> => {
   try {
-    const response = await fetch("/catalogue/products/");
-    if (!response.ok) {
-      throw new Error("Failed to fetch products");
-    }
-    const products: Product[] = await response.json();
-    randomProducts.push(...products);
-    return randomProducts;
+    const data = await useApiFetch<Product[]>("/catalogue/products/");
+    console.log("Recommended Products:", data);
+    randomProducts.value = data || [];
   } catch (error) {
-    console.error("Error fetching products:", error);
-    return randomProducts;
+    console.error("Error fetching recommended products:", error);
+    randomProducts.value = [];
   }
 };
 
@@ -125,5 +121,6 @@ onMounted(async () => {
     activeTab.value = 0;
     fetchProductsByCategory(categories.value[0].pk);
   };
+  await fetchRandomProducts();
 });
 </script>
