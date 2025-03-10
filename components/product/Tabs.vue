@@ -2,7 +2,7 @@
   <section class="py-10 w-4/5 justify-center mx-auto border-t">
     <div class="container mx-auto">
       <div class="text-center">
-        <h2 class="text-2xl font-bold mb-6">Product Menu</h2>
+        <h2 class="text-2xl font-bold mb-6">Danh mục món ăn</h2>
       </div>
 
       <div class="w-full">
@@ -32,7 +32,7 @@
   <section class="py-10 w-4/5 justify-center mx-auto">
     <div class="container mx-auto">
       <div class="text-center">
-        <h2 class="text-2xl font-bold mb-6">Our Recommendations</h2>
+        <h2 class="text-2xl font-bold mb-6">Món ngon không thể bỏ lỡ</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <ProductCard v-for="product in randProduct" :key="product.pk" :product="product" />
@@ -102,11 +102,15 @@ const fetchRandomProducts = async () => {
   try {
     // Định nghĩa kiểu dữ liệu khớp với API
     const data = await useApiFetch<{ results: Product[] }>(
-      "/catalogue/products/?page=1&page_size=8"
+      "/catalogue/products/random/"
     );
 
-    // Lấy danh sách sản phẩm từ "results"
-    randProduct.value = data?.results || [];
+    if (Array.isArray(data)) {
+      randProduct.value = data;
+    } else {
+      console.error("Unexpected response format:", data);
+      randProduct.value = [];
+    }
 
     console.log("Random Products:", randProduct.value);
   } catch (error) {

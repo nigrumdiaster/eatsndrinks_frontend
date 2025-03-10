@@ -2,7 +2,7 @@
   <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4 transition-transform hover:scale-105">
     <div>
       <div class="w-full h-48 flex justify-center items-center bg-gray-100">
-        <img v-if="product.mainimage" :src="product.mainimage" alt="product-image" class="w-full h-full object-cover" />
+        <img v-if="product.mainimage" :src="product.mainimage" alt="product-image" class="w-full h-full object-contain" />
         <img v-else src="/images/preloader.png" alt="loading" class="w-full h-full object-cover" />
       </div>
       <div class="p-4">
