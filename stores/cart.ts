@@ -46,22 +46,34 @@ export const useCartStore = defineStore("cart", () => {
     }
   };
 
-  // ✅ Thêm sản phẩm vào giỏ hàng
   const addToCart = async (productId: number, quantity: number = 1) => {
     try {
-      const response = await useApiFetch<Cart>("/cart/add/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product: productId, quantity }),
-      });
-
+      const response = await useApiFetch<{ id: number; product: number; product_name: string; quantity: number }>(
+        "/cart/add/",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ product: productId, quantity }), // Chỉ gửi productId (số)
+        }
+      );
+  
       if (response) {
-        Object.assign(cart, response); // ✅ Cập nhật giỏ hàng
+        console.log("Sản phẩm đã thêm vào giỏ hàng:", response);
+  
+        // ✅ Cập nhật giỏ hàng
+        const existingItem = cart.items.find((item) => item.product === response.product);
+        if (existingItem) {
+          existingItem.quantity += response.quantity;
+        } else {
+          cart.items.push(response);
+        }
       }
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      console.error("Lỗi khi thêm vào giỏ hàng:", error);
     }
   };
+  
+
 
   // ✅ Xóa sản phẩm khỏi giỏ hàng
   const removeItem = async (itemId: number) => {
