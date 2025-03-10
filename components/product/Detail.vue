@@ -72,38 +72,27 @@
                     </div>
                 </div>
             </div>
-
-
-
-        </div>
-    </section>
-    <!--Lấy 8 sản phẩm recommendations-->
-    <section class="py-10 w-4/5 justify-center mx-auto">
-        <div class="container mx-auto">
-            <div class="text-center">
-                <h2 class="text-2xl font-bold mb-6">Our Recommendations</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <ProductCard v-for="product in products.recommendedProducts.slice(0, 8)" :key="product.id"
-                    :product="product" />
-            </div>
         </div>
     </section>
 
+    <SameType v-if="product && product.category !== undefined" :categoryId="product.category" />
+    
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router';
-import products from '~/data/products.json'
+import SameType from '~/components/product/SameType.vue';
 
 interface ProductImage {
     image: string;
 }
 
 interface Product {
+    pk: number;
     name?: string;
     description?: string;
+    category?: number;
     mainimage?: string;
     images?: ProductImage[];
 }
@@ -169,6 +158,7 @@ const fetchProductData = async () => {
         router.push('/404e')
     }
 }
+
 
 onMounted(fetchProductData)
 </script>
