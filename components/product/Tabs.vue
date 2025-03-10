@@ -1,5 +1,5 @@
 <template>
-  <section class="py-10 w-4/5 justify-center mx-auto">
+  <section class="py-10 w-4/5 justify-center mx-auto border-t">
     <div class="container mx-auto">
       <div class="text-center">
         <h2 class="text-2xl font-bold mb-6">Product Menu</h2>
@@ -7,7 +7,7 @@
 
       <div class="w-full">
         <!-- Tabs Navigation -->
-        <div class="flex justify-center border-b pb-4 space-x-4">
+        <div class="flex justify-center pb-4 space-x-4">
           <button v-for="(tab, index) in tabName" :key="index" @click="changeTab(index, categories[index].pk)"
             class="px-4 py-2 text-lg font-medium transition-all duration-300"
             :class="activeTab === index ? 'border-b-2 border-yellow-600 text-yellow-600' : 'text-gray-500 hover:text-yellow-600'">
@@ -15,8 +15,8 @@
           </button>
         </div>
 
-        <div v-if="tabProduct.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">         
-            <ProductCard v-for="product in tabProduct" :key="product.pk" :product="product" />
+        <div v-if="tabProduct.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mt-6">
+          <ProductCard v-for="product in tabProduct" :key="product.pk" :product="product" />
         </div>
       </div>
 
@@ -35,7 +35,7 @@
         <h2 class="text-2xl font-bold mb-6">Our Recommendations</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <ProductCard v-for="product in randomProducts" :key="product.pk" :product="product" />
+        <ProductCard v-for="product in randProduct" :key="product.pk" :product="product" />
       </div>
     </div>
   </section>
@@ -72,6 +72,7 @@ interface Category {
 const activeTab = ref(0);
 const tabName = ref<string[]>([]);
 const tabProduct = ref<Product[]>([]);
+const randProduct = ref<Product[]>([]);
 const categories = ref<Category[]>([]);
 
 const fetchCategories = async () => {
@@ -97,18 +98,23 @@ const fetchProductsByCategory = async (categoryId: number) => {
   }
 };
 
-const randomProducts = ref<Product[]>([]);
-
-const fetchRandomProducts = async (): Promise<void> => {
+const fetchRandomProducts = async () => {
   try {
-    const data = await useApiFetch<Product[]>("/catalogue/products/");
-    console.log("Recommended Products:", data);
-    randomProducts.value = data || [];
+    // Định nghĩa kiểu dữ liệu khớp với API
+    const data = await useApiFetch<{ results: Product[] }>(
+      "/catalogue/products/?page=1&page_size=8"
+    );
+
+    // Lấy danh sách sản phẩm từ "results"
+    randProduct.value = data?.results || [];
+
+    console.log("Random Products:", randProduct.value);
   } catch (error) {
-    console.error("Error fetching recommended products:", error);
-    randomProducts.value = [];
+    console.error("Error fetching products:", error);
+    randProduct.value = [];
   }
 };
+
 
 const changeTab = (index: number, categoryId: number) => {
   activeTab.value = index;

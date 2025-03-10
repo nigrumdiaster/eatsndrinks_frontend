@@ -33,12 +33,17 @@
 
 <script lang="ts" setup>
 
+import { useCartStore } from "@/stores/cart";
+
+
 const props = defineProps(['product']);
+
 interface ProductImage {
   id: number;
   image: string;
   product: number;
 }
+
 interface Product {
   pk: number;
   name: string;
@@ -52,13 +57,18 @@ interface Product {
   updated_at: string;
   images: ProductImage[];
 }
-function addToCart(product: Product) {
-  console.log(product);
-}
 
+const cartStore = useCartStore(); // Sử dụng store giỏ hàng
+
+// Hàm thêm vào giỏ hàng
+function addToCart(productId: number) {
+  cartStore.addToCart(productId, 1);
+}
+// Định dạng giá tiền VNĐ
 function formatPrice(price: string | number) {
-  return `$${parseFloat(price.toString()).toFixed(2)}`;
+  return parseFloat(price.toString()).toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND"
+  });
 }
-
-
 </script>
