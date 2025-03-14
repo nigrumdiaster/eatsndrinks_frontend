@@ -76,26 +76,16 @@
             </div>
         </div>
     </section>
-    <!--Lấy 8 sản phẩm recommendations-->
-    <section class="py-10 w-4/5 justify-center mx-auto">
-        <div class="container mx-auto">
-            <div class="text-center">
-                <h2 class="text-2xl font-bold mb-6">Our Recommendations</h2>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <ProductCard v-for="product in products.recommendedProducts.slice(0, 8)" :key="product.id"
-                    :product="product" />
-            </div>
-        </div>
-    </section>
+
+    <SameType v-if="product && product.category !== undefined" :categoryId="product.category" />
+    
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router';
-import { useCartStore } from "@/stores/cart";
-import { useToast } from "vue-toastification";
-import products from '~/data/products.json'
+import { ref } from 'vue'
+import { useRoute } from 'vue-router';
+import SameType from '~/components/product/SameType.vue';
+
 
 interface ProductImage {
     image: string;
@@ -160,6 +150,7 @@ const fetchProductData = async () => {
     }
 }
 
+
 onMounted(fetchProductData);
 
 // Các hàm xử lý ảnh zoom
@@ -185,4 +176,5 @@ const nextSlide = () => {
 const setSlide = (index: number) => {
     activeIndex.value = index
 }
+
 </script>
