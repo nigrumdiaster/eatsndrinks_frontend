@@ -59,13 +59,15 @@
                     <!-- Phần "Chọn số lượng" bên trái -->
                     <div class="flex items-center mr-4">
                         <label class="mr-2 font-medium">Chọn số lượng:</label>
-                        <input type="number" min="1" value="1" class="w-16 p-2 border rounded-md" />
+                        <input type="number" v-model="quantity" min="1" :max="product?.quantity" class="w-16 p-2 border rounded-md" />
                     </div>
                     <!-- Container cho 2 button bên phải -->
                     <div class="flex space-x-4 flex-1">
-                        <button class="h-[50px] flex-1 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
+                        <button @click="product && addToCart(product, quantity)"
+                            class="h-[50px] flex-1 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
                             Thêm vào giỏ hàng
                         </button>
+
                         <button class="h-[50px] flex-1 bg-red-600 text-white rounded-lg hover:bg-red-700">
                             Đặt hàng
                         </button>
@@ -84,64 +86,53 @@ import { ref } from 'vue'
 import { useRoute } from 'vue-router';
 import SameType from '~/components/product/SameType.vue';
 
+
 interface ProductImage {
     image: string;
 }
 
 interface Product {
     pk: number;
-    name?: string;
-    description?: string;
-    category?: number;
-    mainimage?: string;
-    images?: ProductImage[];
+    name: string;
+    description: string;
+    mainimage: string;
+    is_active: boolean;
+    quantity: number;
+    price: string;
+    category: number;
+    created_at: string;
+    updated_at: string;
+    images: ProductImage[];
 }
 
 const props = defineProps(['product']);
-
 const slides = ref<string[]>([]);
 const activeIndex = ref<number>(0);
 const product = ref<Product | null>(null);
+const quantity = ref<number>(1); // Track the quantity of the product
+const zoomedImage = ref<string | null>(null);
+const cartStore = useCartStore();
+const toast = useToast();
 const route = useRoute();
 const router = useRouter();
 const productId = route.params.id;
 
-const prevSlide = () => { 
-    if (slides.value.length === 0)
-        return;
-    activeIndex.value = (activeIndex.value - 1 + slides.value.length) % slides.value.length;
+// Hàm thêm vào giỏ hàng
+function addToCart(product: Product, quantity: number) {
+    if (product.quantity >= quantity) {
+        cartStore.addToCart(product.pk, quantity);
+        toast.success("Đã thêm sản phẩm vào giỏ hàng");
+    } else {
+        toast.error("Số lượng sản phẩm không đủ");
+    }
 }
-
-const nextSlide = () => {
-    if (slides.value.length === 0)
-        return;
-    activeIndex.value = (activeIndex.value + 1) % slides.value.length;
-}
-
-const setSlide = (index: number) => {
-    activeIndex.value = index
-}
-
-
-
-const zoomedImage = ref<string | null>(null);
-
-const zoomImage = (slide: string) => {
-    zoomedImage.value = slide;  // Store a single image URL
-}
-
-const closeZoom = () => {
-    zoomedImage.value = null;
-}
-
 
 const fetchProductData = async () => {
     try {
-        const data  = await useApiFetch<Product>(`/catalogue/products/${productId}/`)
-        
-        product.value = data
+        const data = await useApiFetch<Product>(`/catalogue/products/${productId}/`)
+        product.value = data;
 
-        // Xây dựng mảng slides gồm ảnh chính và các ảnh trong mảng images
+        // Xây dựng mảng slides
         slides.value = []
         if (data.mainimage) {
             slides.value.push(data.mainimage)
@@ -160,5 +151,30 @@ const fetchProductData = async () => {
 }
 
 
-onMounted(fetchProductData)
+onMounted(fetchProductData);
+
+// Các hàm xử lý ảnh zoom
+const zoomImage = (slide: string) => {
+    zoomedImage.value = slide;  // Store a single image URL
+}
+
+const closeZoom = () => {
+    zoomedImage.value = null;
+}
+
+// Các hàm chuyển slide
+const prevSlide = () => {
+    if (slides.value.length === 0) return;
+    activeIndex.value = (activeIndex.value - 1 + slides.value.length) % slides.value.length;
+}
+
+const nextSlide = () => {
+    if (slides.value.length === 0) return;
+    activeIndex.value = (activeIndex.value + 1) % slides.value.length;
+}
+
+const setSlide = (index: number) => {
+    activeIndex.value = index
+}
+
 </script>

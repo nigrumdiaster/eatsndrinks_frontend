@@ -2,7 +2,7 @@
   <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4 transition-transform hover:scale-105">
     <div>
       <div class="w-full h-48 flex justify-center items-center bg-gray-100">
-        <img v-if="product.mainimage" :src="product.mainimage" alt="product-image" class="w-full h-full object-cover" />
+        <img v-if="product.mainimage" :src="product.mainimage" alt="product-image" class="w-full h-full object-contain" />
         <img v-else src="/images/preloader.png" alt="loading" class="w-full h-full object-cover" />
       </div>
       <div class="p-4">
@@ -22,7 +22,7 @@
           </div>
           <button
             class="bg-yellow-400 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-yellow-600 transition"
-            @click="addToCart(product)">
+            @click="addToCart(product.pk)">
             <img src="/icons/cart_fill.svg" alt="cart icon" class="w-5 h-5" />
           </button>
         </div>
@@ -34,10 +34,10 @@
 <script lang="ts" setup>
 
 import { useCartStore } from "@/stores/cart";
-
+import { useToast } from "vue-toastification";
 
 const props = defineProps(['product']);
-
+const toast = useToast();
 interface ProductImage {
   id: number;
   image: string;
@@ -63,6 +63,7 @@ const cartStore = useCartStore(); // Sử dụng store giỏ hàng
 // Hàm thêm vào giỏ hàng
 function addToCart(productId: number) {
   cartStore.addToCart(productId, 1);
+  toast.success("Đã thêm sản phẩm vào giỏ hàng");
 }
 // Định dạng giá tiền VNĐ
 function formatPrice(price: string | number) {

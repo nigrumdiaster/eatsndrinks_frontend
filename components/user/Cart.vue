@@ -20,7 +20,7 @@
             <td class="p-2">{{ item.product_name }}</td>
             <td class="text-center p-2">{{ item.quantity }}</td>
             <td class="text-center p-2">
-              <button @click="removeItem(item.id)" class="bg-red-500 text-white px-3 py-1 rounded-md">
+              <button @click="handleRemoveItem(item.id)" class="bg-red-500 text-white px-3 py-1 rounded-md">
                 Xóa
               </button>
             </td>
@@ -42,16 +42,26 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import { useCartStore } from "@/stores/cart";
+import { useToast } from "vue-toastification"; // Import the toast function
 
 const cartStore = useCartStore();
 const isLoading = ref(true);
+const toast = useToast(); // Initialize the toast function
 
 // ✅ Đảm bảo Vue theo dõi `cart`
 const { cart, fetchCart, removeItem, clearCart, loading } = cartStore;
+
 onMounted(async () => {
   await cartStore.fetchCart();
   console.log("Cart in Vue:", cart.value); // Kiểm tra dữ liệu có cập nhật không
   isLoading.value = false;
 });
+
+// Handle removing an item from the cart
+const handleRemoveItem = (itemId) => {
+  removeItem(itemId); // Call removeItem from the store
+  toast.success("Sản phẩm đã được xóa khỏi giỏ hàng!"); // Show success toast
+};
 </script>
+
 
