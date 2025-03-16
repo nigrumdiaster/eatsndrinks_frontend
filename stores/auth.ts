@@ -12,9 +12,9 @@ export const useAuthStore = defineStore("auth", () => {
   const accessToken = useCookie<string | null>("access_token");
   const refreshToken = useCookie<string | null>("refresh_token");
   const user = ref<User | null>(null);
+  const isRefreshing = ref<boolean>(false); // ✅ Thêm biến isRefreshing
 
   const isAuthenticated = computed(() => !!accessToken.value);
-
   const config = useRuntimeConfig();
 
   const login = async (username: string, password: string) => {
@@ -62,6 +62,9 @@ export const useAuthStore = defineStore("auth", () => {
   };
 
   const refreshAccessToken = async () => {
+    if (isRefreshing.value) return; // ✅ Nếu đang refresh thì không gọi lại
+    isRefreshing.value = true;
+
     try {
       if (!refreshToken.value) throw new Error("No refresh token available");
 
@@ -79,6 +82,8 @@ export const useAuthStore = defineStore("auth", () => {
     } catch (err) {
       console.error("Token refresh failed:", err);
       logout();
+    } finally {
+      isRefreshing.value = false; // ✅ Đánh dấu đã xong
     }
   };
 
@@ -88,5 +93,5 @@ export const useAuthStore = defineStore("auth", () => {
     user.value = null;
   };
 
-  return { login, logout, fetchUser, refreshAccessToken, accessToken, user, isAuthenticated };
+  return { login, logout, fetchUser, refreshAccessToken, accessToken, user, isAuthenticated, isRefreshing };
 });
