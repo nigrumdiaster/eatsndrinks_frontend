@@ -46,7 +46,12 @@ export default <RouterConfig>{
             name: 'admin',
             path: '/admin',
             component: () => import('~/pages/admin/Dashboard.vue'),
-        }
+        },
+        {
+            name: 'admin_user_management',
+            path: '/admin/users',
+            component: () => import('~/pages/admin/usermgmt/List.vue'),
+        },
 
     ]
 };

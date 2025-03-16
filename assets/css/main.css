@@ -1,1 +1,50 @@
 @import "tailwindcss";
+
+  
+  .vue3-easy-data-table__header th {
+    font-size: 15px; /* Tăng kích thước chữ của tiêu đề */
+    font-weight: bold;
+  }
+  
+  .vue3-easy-data-table__body td {
+    font-size: 13px; /* Tăng kích thước chữ của nội dung */
+  }
+  
+  .pagination-container {
+    display: flex;
+
+    column-gap: 10px;
+  }
+
+  .paginate-buttons {
+    height: 40px;
+
+    width: 40px;
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    background-color: white;
+
+    border: 1px solid rgb(217, 217, 217);
+
+    color: black;
+  }
+
+  .paginate-buttons:hover {
+    background-color: #009688;
+    color: white;
+  }
+
+  .active-page {
+    background-color: #26A69A;
+
+    border: 1px solid #80CBC4;
+
+    color: white;
+  }
+
+  .active-page:hover {
+    background-color: #80CBC4;
+  }

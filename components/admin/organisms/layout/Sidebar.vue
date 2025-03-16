@@ -83,8 +83,7 @@ const toggleDropdown = (menu) => {
 
 // Sidebar Dropdown Items
 const itemsQTHT = [
-  { link: '/user_management', labelDD: 'Tài khoản' },
-  { link: '/group_management', labelDD: 'Nhóm' },
+  { link: '/admin/users', labelDD: 'Tài khoản' },
 ];
 
 

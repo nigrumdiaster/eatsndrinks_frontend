@@ -37,9 +37,10 @@
             <td class="p-2">{{ formatPrice(item.product_price) }}</td>
 
             <td class="text-center p-2">
-              <button @click="openConfirmDelete(item.id)"
+              <!-- 🗑 Xóa ngay sản phẩm mà không cần xác nhận -->
+              <button @click="removeItem(item.id)"
                 class="p-2 rounded-md transition flex items-center justify-center hover:bg-gray-200">
-                <img src="public\icons\x_symbol.svg" alt="Xóa" class="w-5 h-5">
+                <img src="/icons/x_symbol.svg" alt="Xóa" class="w-5 h-5">
               </button>
             </td>
           </tr>
@@ -57,31 +58,33 @@
     <p v-else class="text-gray-500">Giỏ hàng của bạn trống.</p>
 
     <div class="mt-4 flex justify-between">
-  <button v-if="cart && cart.items.length > 0" @click="clearAllItems"
-    class="bg-gray-800 text-white px-4 py-2 rounded-md">
-    Xóa tất cả
-  </button>
+      <!-- 🗑 Xác nhận khi xóa tất cả sản phẩm -->
+      <button v-if="cart && cart.items.length > 0" @click="showConfirmDelete = true"
+        class="bg-red-600 hover:bg-gray-800 text-white px-4 py-2 rounded-md">
+        Xóa tất cả
+      </button>
 
-  <button v-if="cart && cart.items.length > 0"
-    class="bg-red-800 text-white px-4 py-2 rounded-md">
-    Đặt hàng
-  </button>
-</div>
-
+      <button v-if="cart && cart.items.length > 0"
+        class="bg-yellow-500 hover:bg-gray-800 text-white px-4 py-2 rounded-md">
+        Đặt hàng
+      </button>
+    </div>
 
   </div>
 
-
-  <div v-if="showConfirmDelete" class="fixed inset-0 flex items-center justify-center bg-transparent bg-opacity-50">
-    <div class="bg-white p-6 rounded-lg shadow-lg w-80">
-      <h2 class="text-lg font-semibold mb-4">Xác nhận xóa</h2>
-      <p class="text-gray-600">Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?</p>
-      <div class="flex justify-end mt-4 space-x-2">
-        <button @click="showConfirmDelete = false" class="px-4 py-2 bg-gray-300 rounded-md">Hủy</button>
-        <button @click="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded-md">Xóa</button>
-      </div>
+<!-- Hộp thoại xác nhận xóa tất cả -->
+<div v-if="showConfirmDelete" class="fixed inset-0 flex items-center justify-center">
+  <!-- Hộp thoại thực tế -->
+  <div class="bg-white p-6 rounded-lg shadow-lg w-80 relative">
+    <h2 class="text-lg font-semibold mb-4">Xác nhận xóa tất cả</h2>
+    <p class="text-gray-600">Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng không?</p>
+    <div class="flex justify-end mt-4 space-x-2">
+      <button @click="showConfirmDelete = false" class="px-4 py-2 bg-gray-300 rounded-md">Hủy</button>
+      <button @click="confirmDeleteAll" class="px-4 py-2 bg-red-600 text-white rounded-md">Xóa</button>
     </div>
   </div>
+</div>
+
 
 
 </template>
@@ -89,49 +92,38 @@
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useCartStore } from "@/stores/cart";
-import { useToast } from "vue-toastification"; // Import the toast function
-
+import { useToast } from "vue-toastification";
 
 const cartStore = useCartStore();
 const isLoading = ref(true);
-const toast = useToast(); // Initialize the toast function
+const toast = useToast();
 const showConfirmDelete = ref(false);
-const itemToDelete = ref<number | null>(null);
 
 const totalPrice = computed(() => {
   return cart.items.reduce((total, item) => total + item.quantity * item.product_price, 0);
 });
-// ✅ Đảm bảo Vue theo dõi `cart`
-const { cart, fetchCart, removeItem, clearCart, loading } = cartStore;
 
+const { cart, fetchCart, removeItem, clearCart } = cartStore;
 
-// Mở hộp thoại xác nhận xóa
-const openConfirmDelete = (itemId: number) => {
-  itemToDelete.value = itemId;
-  showConfirmDelete.value = true;
-};
-
-// Xác nhận xóa sản phẩm
-const confirmDelete = () => {
-  if (itemToDelete.value !== null) {
-    removeItem(itemToDelete.value);
-  }
+// 🛑 Xác nhận xóa tất cả sản phẩm
+const confirmDeleteAll = async () => {
+  await clearCart();
+  await fetchCart();
   showConfirmDelete.value = false;
-  itemToDelete.value = null;
 };
 
 onMounted(async () => {
   await cartStore.fetchCart();
-  console.log("Cart in Vue:", cartStore.cart); // Không cần `.value`
   isLoading.value = false;
 });
 
 let updateTimeout: NodeJS.Timeout | null = null;
 
+// ✅ Cập nhật số lượng sản phẩm
 const updateQuantity = (itemId: number, newQuantity: number) => {
-  if (newQuantity < 1) return; // Không cho phép số lượng nhỏ hơn 1
+  if (newQuantity < 1) return;
 
-  if (updateTimeout) clearTimeout(updateTimeout); // Xóa timeout trước đó nếu có
+  if (updateTimeout) clearTimeout(updateTimeout);
 
   updateTimeout = setTimeout(async () => {
     try {
@@ -145,29 +137,22 @@ const updateQuantity = (itemId: number, newQuantity: number) => {
       );
 
       if (response) {
-        console.log("Cập nhật số lượng thành công:", response);
-
-        // ✅ Cập nhật giỏ hàng
         const existingItem = cart.items.find((item) => item.id === response.id);
         if (existingItem) {
           existingItem.quantity = response.quantity;
         }
 
         await cartStore.fetchCart();
+        toast.success("Cập nhật số lượng thành công!");
       }
     } catch (error) {
       console.error("Lỗi khi cập nhật số lượng:", error);
       toast.error("Không thể cập nhật số lượng. Vui lòng thử lại!");
     }
-  }, 200); // ⏳ Delay 200ms trước khi gọi API
+  }, 200);
 };
 
-const clearAllItems = async () => {
-  await clearCart(); 
-  await fetchCart(); 
-};
-
-// Định dạng giá tiền VNĐ
+// 🔄 Định dạng giá tiền VNĐ
 function formatPrice(price: string | number) {
   return parseFloat(price.toString()).toLocaleString("vi-VN", {
     style: "currency",
