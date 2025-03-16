@@ -84,6 +84,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useRoute } from 'vue-router';
+import { useToast } from 'vue-toastification';
 import SameType from '~/components/product/SameType.vue';
 import { useToast } from 'vue-toastification';
 

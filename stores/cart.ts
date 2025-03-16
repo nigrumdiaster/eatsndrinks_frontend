@@ -6,6 +6,8 @@ interface CartItem {
   id: number;
   product: number;
   product_name: string;
+  product_mainimage: string;
+  product_price:number;
   quantity: number;
 }
 
@@ -48,7 +50,7 @@ export const useCartStore = defineStore("cart", () => {
 
   const addToCart = async (productId: number, quantity: number = 1) => {
     try {
-      const response = await useApiFetch<{ id: number; product: number; product_name: string; quantity: number }>(
+      const response = await useApiFetch<{ id: number; product: number; product_name: string; product_mainimage: string; product_price:number; quantity: number }>(
         "/cart/add/",
         {
           method: "POST",
