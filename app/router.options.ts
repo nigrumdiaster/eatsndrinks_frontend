@@ -42,7 +42,11 @@ export default <RouterConfig>{
             path: '/cart',
             component: () => import('~/pages/user/Cart.vue'),
         },
-
+        {
+            name: 'admin',
+            path: '/admin',
+            component: () => import('~/pages/admin/Dashboard.vue'),
+        }
 
     ]
 };

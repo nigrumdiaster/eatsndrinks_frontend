@@ -85,7 +85,7 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router';
 import SameType from '~/components/product/SameType.vue';
-
+import { useToast } from 'vue-toastification';
 
 interface ProductImage {
     image: string;
