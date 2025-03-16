@@ -10,7 +10,7 @@
 
     <div class="flex flex-col h-4/5 w-full space-y-2 mt-1">
       <div class="ml-auto">
-        <NuxtLink to="/user_management/create">
+        <NuxtLink to="/admin/users/create">
           <RectButton><span>Thêm tài khoản</span></RectButton>
         </NuxtLink>
       </div>
@@ -44,7 +44,9 @@ interface User {
   first_name: string;
   last_name: string;
   fullname: string;
+  is_active: boolean | string;
 }
+
 
 const users = ref<User[]>([]);
 const totalUsers = ref(0);
@@ -56,8 +58,10 @@ const headers = [
   { text: "ID", value: "id" },
   { text: "Username", value: "username" },
   { text: "Full Name", value: "fullname" },
+  { text: "Active", value: "is_active" },
   { text: "Actions", value: "actions", sortable: false },
 ];
+
 
 const fetchUsers = async () => {
   try {
@@ -76,6 +80,7 @@ const fetchUsers = async () => {
       first_name: user.first_name,
       last_name: user.last_name,
       fullname: `${user.first_name} ${user.last_name}`.trim(),
+      is_active: user.is_active ? "✅ Active" : "❌ Inactive",
     }));
 
     totalUsers.value = users.value.length;
@@ -89,14 +94,14 @@ const deleteUser = async (id: number) => {
 
   try {
     const config = useRuntimeConfig();
-    const token = useCookie("auth_token");
+    const token = useCookie("access_token");
 
     if (!token.value) return;
 
-    await $fetch(`${config.public.apiBase}/users/status/${id}`, {
+    await $fetch(`${config.public.apiBase}/users/admin/user/${id}/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${token.value}` },
-      body: { isActive: false },
+      body: { is_active: false },
     });
 
     fetchUsers();

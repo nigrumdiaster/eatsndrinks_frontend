@@ -52,6 +52,16 @@ export default <RouterConfig>{
             path: '/admin/users',
             component: () => import('~/pages/admin/usermgmt/List.vue'),
         },
+        {
+            name: 'admin_user_management_create',
+            path: '/admin/users/create',
+            component: () => import('~/pages/admin/usermgmt/Create.vue'),
+        },
+        {
+            name: 'admin_user_management_id', // ✅ Dynamic route for product details
+            path: '/admin/users/:id', // Dynamic segment ":id"
+            component: () => import('~~/pages/admin/usermgmt/[id].vue'),
+        },
 
     ]
 };
