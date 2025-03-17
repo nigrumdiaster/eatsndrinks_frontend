@@ -62,6 +62,10 @@ export default <RouterConfig>{
             path: '/admin/users/:id', // Dynamic segment ":id"
             component: () => import('~~/pages/admin/usermgmt/[id].vue'),
         },
-
+        {
+            name: 'order', 
+            path: '/order', 
+            component: () => import('~/pages/user/Order.vue'),
+        },
     ]
 };
