@@ -63,27 +63,27 @@
         class="bg-red-600 hover:bg-gray-800 text-white px-4 py-2 rounded-md">
         Xóa tất cả
       </button>
+        <NuxtLink to="/order" v-if="cart && cart.items.length > 0"
+          class="bg-yellow-500 hover:bg-gray-800 text-white px-4 py-2 rounded-md">
+          Đặt hàng
+        </NuxtLink>
 
-      <button v-if="cart && cart.items.length > 0"
-        class="bg-yellow-500 hover:bg-gray-800 text-white px-4 py-2 rounded-md">
-        Đặt hàng
-      </button>
     </div>
 
   </div>
 
-<!-- Hộp thoại xác nhận xóa tất cả -->
-<div v-if="showConfirmDelete" class="fixed inset-0 flex items-center justify-center">
-  <!-- Hộp thoại thực tế -->
-  <div class="bg-white p-6 rounded-lg shadow-lg w-80 relative">
-    <h2 class="text-lg font-semibold mb-4">Xác nhận xóa tất cả</h2>
-    <p class="text-gray-600">Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng không?</p>
-    <div class="flex justify-end mt-4 space-x-2">
-      <button @click="showConfirmDelete = false" class="px-4 py-2 bg-gray-300 rounded-md">Hủy</button>
-      <button @click="confirmDeleteAll" class="px-4 py-2 bg-red-600 text-white rounded-md">Xóa</button>
+  <!-- Hộp thoại xác nhận xóa tất cả -->
+  <div v-if="showConfirmDelete" class="fixed inset-0 flex items-center justify-center">
+    <!-- Hộp thoại thực tế -->
+    <div class="bg-white p-6 rounded-lg shadow-lg w-80 relative">
+      <h2 class="text-lg font-semibold mb-4">Xác nhận xóa tất cả</h2>
+      <p class="text-gray-600">Bạn có chắc chắn muốn xóa toàn bộ giỏ hàng không?</p>
+      <div class="flex justify-end mt-4 space-x-2">
+        <button @click="showConfirmDelete = false" class="px-4 py-2 bg-gray-300 rounded-md">Hủy</button>
+        <button @click="confirmDeleteAll" class="px-4 py-2 bg-red-600 text-white rounded-md">Xóa</button>
+      </div>
     </div>
   </div>
-</div>
 
 
 
