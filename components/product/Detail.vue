@@ -46,6 +46,7 @@
             <div class="ml-10 w-1/2 flex flex-col min-h-[300px] justify-between">
                 <div v-if="product">
                     <h1 class="text-2xl font-bold">{{ product.name }}</h1>
+                    <h2 class="text-2xl font-bold">{{ product.category }}</h2>
                     <p class="mt-2 text-gray-600">
                         {{ product.description }}
                     </p>
