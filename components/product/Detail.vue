@@ -46,8 +46,8 @@
             <div class="ml-10 w-1/2 flex flex-col min-h-[300px] justify-between">
                 <div v-if="product">
                     <h1 class="text-2xl font-bold">{{ product.name }}</h1>
-                    <h2 class="text-2xl font-bold">{{ product.category }}</h2>
-                    <p class="mt-2 text-gray-600">
+                    <h2 class="text-xl">{{ product.category_name }}</h2>
+                    <p class="mt-6 text-lg text-gray-600">
                         {{ product.description }}
                     </p>
                 </div>
@@ -101,6 +101,7 @@ interface Product {
     quantity: number;
     price: string;
     category: number;
+    category_name: string;
     created_at: string;
     updated_at: string;
     images: ProductImage[];
