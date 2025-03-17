@@ -47,6 +47,7 @@ export default <RouterConfig>{
             path: '/admin',
             component: () => import('~/pages/admin/Dashboard.vue'),
         },
+        // User management
         {
             name: 'admin_user_management',
             path: '/admin/users',
@@ -66,6 +67,13 @@ export default <RouterConfig>{
             name: 'order', 
             path: '/order', 
             component: () => import('~/pages/user/Order.vue'),
+        },
+
+        // Product management
+        {
+            name: 'admin_product_management',
+            path: '/admin/products',
+            component: () => import('~/pages/admin/productmgmt/List.vue'),
         },
     ]
 };

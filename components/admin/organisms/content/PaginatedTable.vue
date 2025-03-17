@@ -11,6 +11,7 @@
             <button @click="emit('delete', id)" class="h-6 w-6"><img src="/images/delete_icon_table.png" alt="Delete"></button>
           </div>
         </template>
+        <slot></slot>
       </EasyDataTable>
     </div>
 

@@ -6,7 +6,7 @@
                 <h2 class="text-2xl font-bold mb-6">Our Recommendations</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <ProductCard v-for="product in tabProduct.slice(0, 8)" :key="product.pk"
+                <ProductCard v-for="product in tabProduct.slice(0, 8)" :key="product.id"
                     :product="product" />
             </div>
         </div>
@@ -19,7 +19,7 @@
 import { ref, watch } from "vue";
 
 interface Product {
-    pk: number;
+    id: number;
     name?: string;
     description?: string;
     category?: number;
