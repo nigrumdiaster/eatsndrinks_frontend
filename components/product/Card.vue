@@ -7,7 +7,7 @@
       </div>
       <div class="p-4">
         <h5 class="text-lg font-semibold">
-          <NuxtLink :to="`/product/${product.pk}`" class="text-yellow-600 hover:underline">
+          <NuxtLink :to="`/product/${product.id}`" class="text-yellow-600 hover:underline">
             {{ product.name }}
           </NuxtLink>
         </h5>
@@ -22,7 +22,7 @@
           </div>
           <button
             class="bg-yellow-400 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-yellow-600 transition"
-            @click="addToCart(product.pk)">
+            @click="addToCart(product.id)">
             <img src="/icons/cart_fill.svg" alt="cart icon" class="w-5 h-5" />
           </button>
         </div>
@@ -45,7 +45,7 @@ interface ProductImage {
 }
 
 interface Product {
-  pk: number;
+  id: number;
   name: string;
   description: string;
   mainimage: string;

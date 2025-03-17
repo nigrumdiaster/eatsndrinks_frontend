@@ -47,6 +47,7 @@ export default <RouterConfig>{
             path: '/admin',
             component: () => import('~/pages/admin/Dashboard.vue'),
         },
+        // User management
         {
             name: 'admin_user_management',
             path: '/admin/users',
@@ -62,6 +63,12 @@ export default <RouterConfig>{
             path: '/admin/users/:id', // Dynamic segment ":id"
             component: () => import('~~/pages/admin/usermgmt/[id].vue'),
         },
+        // Product management
+        {
+            name: 'admin_product_management',
+            path: '/admin/products',
+            component: () => import('~/pages/admin/productmgmt/List.vue'),
+        }
 
     ]
 };
