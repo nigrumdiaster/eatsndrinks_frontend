@@ -1,7 +1,7 @@
 <template>
     <footer class="bg-gray-900 text-white py-10">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           <!-- Company Information -->
           <div>
@@ -45,7 +45,7 @@
                 <li class="flex items-center space-x-2">
                     <img src="public\icons\marker.svg" alt="Contact Icon" class="w-5 h-5">
                     <i class="bi bi-geo-alt-fill text-yellow-500"></i>
-                    <span>Chào cả nhà yêu đến với Khu CNC Hoà Lạc</span>
+                    <span>Trường Đại học Sư phạm Kỹ thuật Thành phố Hồ Chí Minh</span>
                 </li>
                 <li class="flex items-center space-x-2">
                     <img src="public\icons\phone.svg" alt="Contact Icon" class="w-5 h-5">
@@ -65,7 +65,7 @@
                     <img src="public\icons\twitter-round-svgrepo-com.svg" alt="Contact Icon" class="w-10 h-10" svg-white>
                     <i class="bi bi-twitter text-2xl"></i>
                 </a>
-                <a href="https://www.facebook.com/kaizayoi" class="text-white">
+                <a href="#" class="text-white">
                     <img src="public\icons\facebook-svgrepo-com.svg" alt="Contact Icon" class="w-10 h-10" svg-white>
                     <i class="bi bi-facebook text-2xl"></i>
                 </a>
