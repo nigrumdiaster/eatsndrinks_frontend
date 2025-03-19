@@ -10,12 +10,13 @@
         <template #label>Mật khẩu</template>
       </LabelInput>
 
-      <LabelInput id="fullname" v-model="form.fullname" type="text" placeholder="Họ và tên">
-        <template #label>Họ và tên</template>
+      <LabelInput id="last_name" v-model="form.last_name" type="text" placeholder="Họ">
+        <template #label>Họ</template>
       </LabelInput>
 
-      <LabelInput id="email" v-model="form.email" type="email" placeholder="Email">
-        <template #label>Email</template>
+
+      <LabelInput id="firt_name" v-model="form.first_name" type="text" placeholder="Tên">
+        <template #label>Tên</template>
       </LabelInput>
 
       <!-- Nút hành động -->
@@ -40,7 +41,6 @@ import { ref } from 'vue';
 import LabelInput from '~/components/admin/molecules/LabelInputBlack.vue';
 import { useToast } from 'vue-toastification';
 import { useRouter } from '#app';
-import { POSITION } from "vue-toastification";
 
 const toast = useToast();
 const router = useRouter();
@@ -49,8 +49,8 @@ const router = useRouter();
 const form = ref({
   username: '',
   password: '',
-  fullname: '',
-  email: ''
+  first_name: '',
+  last_name: ''
 });
 
 const emit = defineEmits(['createUser']);
@@ -61,16 +61,6 @@ const createUser = () => {
   emit('createUser', form.value);
 };
 
-// function createUserAndCreatAnother() {
-//   console.log("Lưu chỉnh sửa và tạo mới");
-//   toast.success('Lưu chỉnh sửa và tạo mới thành công');
-
-//   // Emit the event to the parent
-//   emit('createUser', form.value);
-
-//   // Reset form fields
-//   form.value = { username: '', password: '', fullname: '', email: '' };
-// }
 
 const cancelCreate = () => {
   console.log("Thoát");
