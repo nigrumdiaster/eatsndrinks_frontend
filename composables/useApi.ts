@@ -42,6 +42,6 @@ export const useApiFetch = async <T>(endpoint: string, options: RequestInit = {}
     return text ? (JSON.parse(text) as T) : ({} as T);
   } catch (error) {
     console.error("❌ API call failed:", error);
-    return {} as T; // ✅ Tránh return `undefined`
+    throw error;
   }
 };

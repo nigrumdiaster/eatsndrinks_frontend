@@ -86,7 +86,7 @@
 import { ref } from 'vue'
 import { useRoute } from 'vue-router';
 import { useToast } from 'vue-toastification';
-import SameType from '~/components/product/SameType.vue';
+import SameType from '~/components/users/product/SameType.vue';
 
 interface ProductImage {
     image: string;
@@ -147,7 +147,7 @@ const fetchProductData = async () => {
             })
         }
     } catch (error) {
-        console.error(error)
+        console.error("🚨 Lỗi khi lấy dữ liệu sản phẩm:", error);
         router.push('/404e')
     }
 }

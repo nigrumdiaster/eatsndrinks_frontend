@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-
+import ProductCard from '~/components/users/product/Card.vue';
 interface ProductImage {
   id: number;
   image: string;

@@ -7,7 +7,8 @@
 
 
 <script setup>
-import { UserCart } from '#components';
+import Header from '~/components/users/Header.vue';
+import  UserCart  from '~/components/users/user/Cart.vue';
 
 definePageMeta({
   middleware: 'auth',

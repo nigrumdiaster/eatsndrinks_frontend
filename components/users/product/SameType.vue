@@ -3,7 +3,7 @@
     <section class="py-10 w-4/5 justify-center mx-auto">
         <div class="container mx-auto">
             <div class="text-center">
-                <h2 class="text-2xl font-bold mb-6">Our Recommendations</h2>
+                <h2 class="text-2xl font-bold mb-6">Sản phẩm cùng danh mục</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <ProductCard v-for="product in tabProduct.slice(0, 8)" :key="product.id"
@@ -17,7 +17,7 @@
 
 <script lang="ts" setup>
 import { ref, watch } from "vue";
-
+import ProductCard from '~/components/users/product/Card.vue';
 interface Product {
     id: number;
     name?: string;

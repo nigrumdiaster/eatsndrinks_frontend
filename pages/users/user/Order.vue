@@ -6,9 +6,6 @@
 </template>
 
 <script lang="ts" setup>
-
+import Header from '~/components/users/Header.vue';
+import UserOrder from '~/components/users/user/Order.vue'; // ✅ Import đúng
 </script>
-
-<style>
-
-</style>

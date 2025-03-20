@@ -2,52 +2,58 @@ import type { RouterConfig } from "nuxt/schema";
 
 export default <RouterConfig>{
     routes: (_routes) => [
+        // USERS
         {
             name: 'home',
             path: '/',
-            component: () => import('~/pages/Home.vue'),
+            component: () => import('~/pages/users/Home.vue'),
         },
         {
             name: 'about',
             path: '/about',
-            component: () => import('~/pages/About.vue'),
+            component: () => import('~/pages/users/About.vue'),
         },
         {
             name: 'product-id', // ✅ Dynamic route for product details
             path: '/product/:id', // Dynamic segment ":id"
-            component: () => import('~/pages/product/[id].vue'),
+            component: () => import('~/pages/users/product/[id].vue'),
         },
         {
             name: '404',
             path: '/:catchAll(.*)', // Catch all unknown routes
-            component: () => import('@/pages/404Error.vue'), // Load your 404 page
+            component: () => import('@/pages/users/404Error.vue'), // Load your 404 page
         },
         {
             name: 'login',
             path: '/login',
-            component: () => import('~/pages/auth/Login.vue'),
+            component: () => import('~/pages/users/auth/Login.vue'),
         },
         {
             name: 'register',
             path: '/register',
-            component: () => import('~/pages/auth/Register.vue'),
+            component: () => import('~/pages/users/auth/Register.vue'),
         },
         {
             name: 'profile',
             path: '/profile',
-            component: () => import('~/pages/user/Profile.vue'),
+            component: () => import('~/pages/users/user/Profile.vue'),
         },
         {
             name: 'cart',
             path: '/cart',
-            component: () => import('~/pages/user/Cart.vue'),
+            component: () => import('~/pages/users/user/Cart.vue'),
         },
+        {
+            name: 'order', 
+            path: '/order', 
+            component: () => import('~/pages/users/user/Order.vue'),
+        },
+        // ADMIN
         {
             name: 'admin',
             path: '/admin',
             component: () => import('~/pages/admin/Dashboard.vue'),
         },
-        // User management
         {
             name: 'admin_user_management',
             path: '/admin/users',
@@ -63,13 +69,6 @@ export default <RouterConfig>{
             path: '/admin/users/:id', // Dynamic segment ":id"
             component: () => import('~~/pages/admin/usermgmt/[id].vue'),
         },
-        {
-            name: 'order', 
-            path: '/order', 
-            component: () => import('~/pages/user/Order.vue'),
-        },
-
-        // Product management
         {
             name: 'admin_product_management',
             path: '/admin/products',
