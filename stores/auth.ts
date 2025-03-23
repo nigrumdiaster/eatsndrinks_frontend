@@ -12,7 +12,8 @@ export const useAuthStore = defineStore("auth", () => {
   const accessToken = useCookie<string | null>("access_token");
   const refreshToken = useCookie<string | null>("refresh_token");
   const user = ref<User | null>(null);
-  const isRefreshing = ref<boolean>(false); // ✅ Thêm biến isRefreshing
+  const isAdmin = ref<boolean>(false); // ✅ Thêm biến kiểm tra admin
+  const isRefreshing = ref<boolean>(false);
 
   const isAuthenticated = computed(() => !!accessToken.value);
   const config = useRuntimeConfig();
@@ -31,11 +32,11 @@ export const useAuthStore = defineStore("auth", () => {
         throw new Error("Invalid response from server");
       }
 
-      // ✅ Save tokens in cookies
+      // ✅ Lưu token vào cookies
       accessToken.value = data.access;
       refreshToken.value = data.refresh;
 
-      // ✅ Fetch user info
+      // ✅ Lấy thông tin user
       await fetchUser();
     } catch (err) {
       console.error("Login failed:", err);
@@ -55,14 +56,33 @@ export const useAuthStore = defineStore("auth", () => {
 
       user.value = data;
       console.log("user value", user.value);
+
+      // ✅ Kiểm tra quyền admin
+      await checkAdmin();
     } catch (err) {
       console.error("Failed to fetch user:", err);
       logout();
     }
   };
 
+  const checkAdmin = async () => {
+    try {
+      const data = await $fetch<{ is_admin: boolean }>(
+        `${config.public.apiBase}/users/is-admin/`,
+        {
+          headers: { Authorization: `Bearer ${accessToken.value}` },
+        }
+      );
+
+      isAdmin.value = data.is_admin; // ✅ Cập nhật isAdmin từ API
+    } catch (err) {
+      console.error("Failed to check admin status:", err);
+      isAdmin.value = false;
+    }
+  };
+
   const refreshAccessToken = async () => {
-    if (isRefreshing.value) return; // ✅ Nếu đang refresh thì không gọi lại
+    if (isRefreshing.value) return;
     isRefreshing.value = true;
 
     try {
@@ -83,7 +103,7 @@ export const useAuthStore = defineStore("auth", () => {
       console.error("Token refresh failed:", err);
       logout();
     } finally {
-      isRefreshing.value = false; // ✅ Đánh dấu đã xong
+      isRefreshing.value = false;
     }
   };
 
@@ -91,7 +111,8 @@ export const useAuthStore = defineStore("auth", () => {
     accessToken.value = null;
     refreshToken.value = null;
     user.value = null;
+    isAdmin.value = false;
   };
 
-  return { login, logout, fetchUser, refreshAccessToken, accessToken, user, isAuthenticated, isRefreshing };
+  return { login, logout, fetchUser, checkAdmin, refreshAccessToken, accessToken, user, isAuthenticated, isAdmin, isRefreshing };
 });

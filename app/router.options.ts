@@ -51,12 +51,12 @@ export default <RouterConfig>{
         {
             name: 'order', 
             path: '/order', 
-            component: () => import('~/pages/users/user/order/Order.vue'),
+            component: () => import('~/pages/users/order/Order.vue'),
         },
         {
             name: 'user_orders',
             path: '/user/orders',
-            component: () => import('~/pages/users/user/order/ListOrders.vue'),
+            component: () => import('~/pages/users/order/ListOrders.vue'),
         },
         {
             name: 'user_orders_id',
@@ -68,41 +68,49 @@ export default <RouterConfig>{
             name: 'admin',
             path: '/admin',
             component: () => import('~/pages/admin/Dashboard.vue'),
+            meta: { middleware: 'admin' },
         },
         {
             name: 'admin_user_management',
             path: '/admin/users',
             component: () => import('~/pages/admin/usermgmt/List.vue'),
+            meta: { middleware: 'admin' },
         },
         {
             name: 'admin_user_management_create',
             path: '/admin/users/create',
             component: () => import('~/pages/admin/usermgmt/Create.vue'),
+            meta: { middleware: 'admin' },
         },
         {
             name: 'admin_user_management_id', // ✅ Dynamic route for product details
             path: '/admin/users/:id', // Dynamic segment ":id"
             component: () => import('~~/pages/admin/usermgmt/[id].vue'),
+            meta: { middleware: 'admin' },
         },
         {
             name: 'admin_product_management',
             path: '/admin/products',
             component: () => import('~/pages/admin/productmgmt/List.vue'),
+            meta: { middleware: 'admin' },
         },
         {
             name: 'admin_product_management_create',
             path: '/admin/products/create',
             component: () => import('~/pages/admin/productmgmt/Create.vue'),
+            meta: { middleware: 'admin' },
         },
         {
             name: 'admin_product_management_id', // ✅ Dynamic route for product details
             path: '/admin/products/:id', // Dynamic segment ":id"
             component: () => import('~~/pages/admin/productmgmt/[id].vue'),
+            meta: { middleware: 'admin' },
         },
         {
             name: 'admin_order_management',
             path: '/admin/orders',
             component: () => import('~/pages/admin/ordermgmt/List.vue'),
+            meta: { middleware: 'admin' },
         },
     ]
 };
