@@ -52,7 +52,7 @@ const users = ref<User[]>([]);
 const totalUsers = ref(0);
 const router = useRouter();
 const limit = ref(10);
-const entity = "user_management";
+const entity = "admin/users";
 
 const headers = [
   { text: "ID", value: "id" },

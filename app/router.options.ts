@@ -89,6 +89,20 @@ export default <RouterConfig>{
             path: '/admin/products',
             component: () => import('~/pages/admin/productmgmt/List.vue'),
         },
-        
+        {
+            name: 'admin_product_management_create',
+            path: '/admin/products/create',
+            component: () => import('~/pages/admin/productmgmt/Create.vue'),
+        },
+        {
+            name: 'admin_product_management_id', // ✅ Dynamic route for product details
+            path: '/admin/products/:id', // Dynamic segment ":id"
+            component: () => import('~~/pages/admin/productmgmt/[id].vue'),
+        },
+        {
+            name: 'admin_order_management',
+            path: '/admin/orders',
+            component: () => import('~/pages/admin/ordermgmt/List.vue'),
+        },
     ]
 };

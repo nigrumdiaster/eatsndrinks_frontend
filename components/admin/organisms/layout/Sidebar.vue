@@ -19,6 +19,9 @@
 
         <SidebarItem @click="sidebaropen = true" icon="/icons/food.svg" labelSidebarItem="Quản lý sản phẩm" linkSidebarItem="/admin/products"
           :sidebaropen="sidebaropen" />
+
+        <SidebarItem @click="sidebaropen = true" icon="/icons/food.svg" labelSidebarItem="Quản lý đơn hàng" linkSidebarItem="/admin/orders"
+          :sidebaropen="sidebaropen" />
       </ul>
     </div>
   </div>
