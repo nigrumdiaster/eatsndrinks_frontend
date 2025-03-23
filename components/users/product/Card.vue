@@ -63,7 +63,6 @@ const cartStore = useCartStore(); // Sử dụng store giỏ hàng
 // Hàm thêm vào giỏ hàng
 function addToCart(productId: number) {
   cartStore.addToCart(productId, 1);
-  toast.success("Đã thêm sản phẩm vào giỏ hàng");
 }
 // Định dạng giá tiền VNĐ
 function formatPrice(price: string | number) {

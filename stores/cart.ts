@@ -1,7 +1,8 @@
 import { defineStore } from "pinia";
 import { useApiFetch } from "@/composables/useApi";
 import { ref, reactive, computed } from "vue";
-
+import { useAuthStore } from "@/stores/auth";
+import { useToast } from "vue-toastification";
 interface CartItem {
   id: number;
   product: number;
@@ -16,6 +17,8 @@ interface Cart {
   user: number;
   items: CartItem[];
 }
+
+const toast = useToast();
 
 export const useCartStore = defineStore("cart", () => {
   const cart = reactive<Cart>({
@@ -49,15 +52,27 @@ export const useCartStore = defineStore("cart", () => {
   };
 
   const addToCart = async (productId: number, quantity: number = 1) => {
+    const authStore = useAuthStore();
+  
+    // ✅ Kiểm tra nếu chưa đăng nhập
+    if (!authStore.accessToken) {
+      toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng!");
+      return;
+    }
+  
     try {
-      const response = await useApiFetch<{ id: number; product: number; product_name: string; product_mainimage: string; product_price:number; quantity: number }>(
-        "/cart/add/",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ product: productId, quantity }), // Chỉ gửi productId (số)
-        }
-      );
+      const response = await useApiFetch<{ 
+        id: number; 
+        product: number; 
+        product_name: string; 
+        product_mainimage: string; 
+        product_price: number; 
+        quantity: number 
+      }>("/cart/add/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product: productId, quantity }),
+      });
   
       if (response) {
         console.log("Sản phẩm đã thêm vào giỏ hàng:", response);
@@ -69,9 +84,13 @@ export const useCartStore = defineStore("cart", () => {
         } else {
           cart.items.push(response);
         }
+  
+        // ✅ Hiển thị thông báo thành công
+        toast.success("Đã thêm sản phẩm vào giỏ hàng");
       }
     } catch (error) {
       console.error("Lỗi khi thêm vào giỏ hàng:", error);
+      toast.error("Lỗi khi thêm sản phẩm vào giỏ hàng. Vui lòng thử lại!");
     }
   };
   

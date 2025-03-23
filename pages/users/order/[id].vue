@@ -7,9 +7,10 @@
 
 <script lang="ts" setup>
 import Header from '~/components/users/Header.vue';
-import UserOrderDetail from '~/components/users/order/OrderDetail.vue'; 
+import UserOrderDetail from '~/components/users/order/OrderDetail.vue';
+
+definePageMeta({
+  middleware: 'auth',
+});
+
 </script>
-
-<style>
-
-</style>

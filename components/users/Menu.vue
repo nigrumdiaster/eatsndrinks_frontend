@@ -211,7 +211,6 @@ const formatPrice = (price: number) => price.toLocaleString("vi-VN", { style: "c
 // 🟢 Thêm vào giỏ hàng
 const addToCart = (productId: number) => {
   cartStore.addToCart(productId, 1);
-  toast.success("Đã thêm sản phẩm vào giỏ hàng");
 };
 
 onMounted(fetchCategories);

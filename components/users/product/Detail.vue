@@ -123,7 +123,6 @@ const productId = route.params.id;
 function addToCart(product: Product, quantity: number) {
     if (product.quantity >= quantity) {
         cartStore.addToCart(product.id, quantity);
-        toast.success("Đã thêm sản phẩm vào giỏ hàng");
     } else {
         toast.error("Số lượng sản phẩm không đủ");
     }

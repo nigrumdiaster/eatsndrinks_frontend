@@ -51,17 +51,17 @@ export default <RouterConfig>{
         {
             name: 'order', 
             path: '/order', 
-            component: () => import('~/pages/users/user/Order.vue'),
+            component: () => import('~/pages/users/user/order/Order.vue'),
         },
         {
             name: 'user_orders',
             path: '/user/orders',
-            component: () => import('~/pages/users/user/ListOrders.vue'),
+            component: () => import('~/pages/users/user/order/ListOrders.vue'),
         },
         {
             name: 'user_orders_id',
             path: '/user/orders/:id',
-            component: () => import('~/pages/users/user/[id].vue'),
+            component: () => import('~/pages/users/order/[id].vue'),
         },
         // ADMIN
         {
