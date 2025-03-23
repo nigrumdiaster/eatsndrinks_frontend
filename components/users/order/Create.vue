@@ -1,0 +1,180 @@
+
+<template>
+  <div class="max-w-4xl mx-auto py-10 px-6 bg-white shadow-lg rounded-lg my-10">
+    <h1 class="text-3xl font-bold text-grey-800 mb-6">Đặt hàng</h1>
+
+    <p v-if="isLoading" class="text-red-500">Đang tải ...</p>
+
+    <div class="flex">
+      <div class="w-1/2 mr-auto">
+        <table class="w-full border-4 rounded-lg overflow-hidden bg-white">
+          <thead>
+            <tr class="bg-yellow-200 border-b-4 border-yellow-400">
+              <th class="text-left p-2 pl-4">Ảnh Sản phẩm</th>
+              <th class="text-left p-2">Sản phẩm</th>
+              <th class="text-center p-2">Số lượng</th>
+              <th class="text-left p-2">Giá tiền</th>
+              <th class="text-left p-2">Thành tiền</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in cart.items" :key="item.id" class="border-t border-yellow-400">
+              <td class="p-2">
+                <img :src="item.product_mainimage" alt="Ảnh sản phẩm" class="w-32 h-32 object-cover rounded-lg">
+              </td>
+              <td class="p-2">{{ item.product_name }}</td>
+              <td class="p-2 text-center">{{ item.quantity }}</td>
+              <td class="p-2">{{ formatPrice(item.product_price) }}</td>
+              <td class="p-2">{{ formatPrice(item.quantity * item.product_price) }}</td>
+            </tr>
+            <tr class="border-t-4 border-yellow-400 font-semibold bg-yellow-100">
+              <td colspan="4" class="text-center p-2">Tổng tiền:</td>
+              <td class="p-2">{{ formatPrice(totalPrice) }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="w-1/2 ml-6 bg-gray-100 p-6 rounded-lg shadow">
+        <h2 class="text-2xl font-semibold mb-4">Thông tin khách hàng</h2>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-medium">Tên khách hàng</label>
+          <input v-model="customerName" type="text" class="w-full p-2 border rounded-lg" />
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-medium">Số điện thoại</label>
+          <input v-model="phoneNumber" type="tel" class="w-full p-2 border rounded-lg" />
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-medium">Địa chỉ</label>
+          <input v-model="address" type="text" class="w-full p-2 border rounded-lg" />
+        </div>
+        <div class="mb-4">
+          <label class="block text-gray-700 font-medium">Phương thức thanh toán</label>
+          <select v-model="paymentMethod" class="w-full p-2 border rounded-lg">
+            <option value="cod">Cod</option>
+            <option value="paypal">Paypal</option>
+          </select>
+        </div>
+        <button @click="placeOrder" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-red-600">
+          Xác nhận đặt hàng
+        </button>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import { ref, onMounted, computed } from "vue";
+import { useCartStore } from "@/stores/cart";
+import { useRouter } from "vue-router";
+import { useApiFetch } from "@/composables/useApi";
+import { useToast } from "vue-toastification";
+
+const cartStore = useCartStore();
+const isLoading = ref(true);
+
+const customerName = ref(""); // Giá trị mặc định
+const phoneNumber = ref("");
+const address = ref("");
+const paymentMethod = ref("cod"); // Mặc định là tiền mặt
+
+interface User {
+  first_name: string;
+  last_name: string;
+  username: string;
+  phone_number: string;
+  address: string;
+  date_of_birth: string;
+}
+
+const totalPrice = computed(() => {
+  return cart.items.reduce((total, item) => total + item.quantity * item.product_price, 0);
+});
+
+const { cart, fetchCart } = cartStore;
+
+
+
+// 🔄 Định dạng giá tiền VNĐ
+function formatPrice(price: string | number) {
+  return parseFloat(price.toString()).toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND"
+  });
+}
+
+const user = ref<User | null>(null);
+const router = useRouter();
+
+const fetchUser = async () => {
+  try {
+    const data = await useApiFetch<User>("/users/user/profile/");
+    user.value = data;
+
+    if (data) {
+      customerName.value = `${data.first_name} ${data.last_name}`;
+      phoneNumber.value = data.phone_number;
+      address.value = data.address;
+    }
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin người dùng:", error);
+    router.push("/404");
+  }
+};
+
+
+
+const toast = useToast();
+
+const placeOrder = async () => {
+  try {
+    const orderData = {
+      phone_number: phoneNumber.value,
+      address: address.value,
+      payment_method: paymentMethod.value,
+    };
+
+    console.log("🛠 Dữ liệu gửi đi:", JSON.stringify(orderData, null, 2));
+
+    const response = await useApiFetch("/order/create", {
+      method: "POST",
+      body: JSON.stringify(orderData),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    console.log("✅ Đặt hàng thành công", response);
+
+    // Hiển thị toast thành công
+    toast.success("🎉 Đơn hàng đã được tạo thành công!");
+
+    // Chuyển hướng về trang Home sau khi đặt hàng thành công
+    setTimeout(() => {
+      router.push("/");
+    }, 2000); // Chờ 2 giây để người dùng kịp nhìn thấy thông báo
+  } catch (error: any) {
+    console.error("❌ Lỗi khi đặt hàng:", error);
+
+    let errorMessage = "Đã xảy ra lỗi, vui lòng thử lại!";
+    
+    if (error.response) {
+      try {
+        const errorData = await error.response.json(); // Chờ lấy dữ liệu lỗi từ API
+        console.error("📢 Phản hồi API:", errorData);
+        errorMessage = errorData.message || errorMessage; // Lấy lỗi từ API nếu có
+      } catch (parseError) {
+        console.error("❌ Lỗi khi đọc phản hồi API:", parseError);
+      }
+    }
+
+    // Hiển thị toast lỗi
+    toast.error(`⚠️ ${errorMessage}`);
+  }
+};
+
+onMounted(async () => {
+  isLoading.value = true;
+  await fetchCart();
+  await fetchUser();
+  isLoading.value = false;
+});
+</script>

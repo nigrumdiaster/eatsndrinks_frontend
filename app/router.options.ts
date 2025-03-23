@@ -14,6 +14,11 @@ export default <RouterConfig>{
             component: () => import('~/pages/users/About.vue'),
         },
         {
+            name: 'menu',
+            path: '/menu',
+            component: () => import('~/pages/users/Menu.vue'),
+        },
+        {
             name: 'product-id', // ✅ Dynamic route for product details
             path: '/product/:id', // Dynamic segment ":id"
             component: () => import('~/pages/users/product/[id].vue'),
@@ -48,6 +53,16 @@ export default <RouterConfig>{
             path: '/order', 
             component: () => import('~/pages/users/user/Order.vue'),
         },
+        {
+            name: 'user_orders',
+            path: '/user/orders',
+            component: () => import('~/pages/users/user/ListOrders.vue'),
+        },
+        {
+            name: 'user_orders_id',
+            path: '/user/orders/:id',
+            component: () => import('~/pages/users/user/[id].vue'),
+        },
         // ADMIN
         {
             name: 'admin',
@@ -74,5 +89,6 @@ export default <RouterConfig>{
             path: '/admin/products',
             component: () => import('~/pages/admin/productmgmt/List.vue'),
         },
+        
     ]
 };

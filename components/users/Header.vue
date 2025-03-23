@@ -76,7 +76,7 @@ const isMenuOpen = ref(false);
 // Navigation Menu Items
 const menuItems = [
   { label: "Home", path: "/" },
-  { label: "Menu", path: "/" },
+  { label: "Menu", path: "/menu" },
   { label: "About Us", path: "/about" },
   { label: "Contact Us", path: "/" }
 ];
