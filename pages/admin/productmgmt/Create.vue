@@ -1,10 +1,9 @@
 <template>
-  <AdminLayout pageTitle="Danh sách tài khoản">
+  <AdminLayout pageTitle="Danh sách sản phẩm">
     <template #breadcrumb>
       <Breadcrumb>
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
-        <BreadcrumbItem>Quản trị hệ thống</BreadcrumbItem>
-        <BreadcrumbItem href="/user_management">Tài khoản</BreadcrumbItem>
+        <BreadcrumbItem href="/admin/products">Sản phẩm</BreadcrumbItem>
       </Breadcrumb>
     </template>
 

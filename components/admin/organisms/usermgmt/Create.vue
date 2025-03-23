@@ -70,7 +70,7 @@ const cancelCreate = () => {
     h("button", {
       onClick: () => {
         toast.clear(); // Xóa thông báo
-        router.push('/user_management'); // Điều hướng sau khi xác nhận
+        router.push('/admin/users'); // Điều hướng sau khi xác nhận
       },
       class: "ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-700 transition"
     }, "Thoát")

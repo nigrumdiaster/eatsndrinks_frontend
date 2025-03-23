@@ -60,7 +60,7 @@ const totalProducts = ref(0);
 const route = useRoute();
 const router = useRouter();
 const limit = ref(10);
-const entity = "admin/product";
+const entity = "admin/products";
 const toast = useToast();
 const headers = [
   { text: "ID", value: "id" },

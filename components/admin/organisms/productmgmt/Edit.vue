@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col bg-white p-6 w-full h-full">
-    <strong class="text-2xl mb-3">Thêm sản phẩm</strong>
+    <strong class="text-2xl mb-3">Chỉnh sửa sản phẩm</strong>
     <div class="space-y-6">
       <!-- Tên sản phẩm -->
       <LabelInput id="name" v-model="form.name" type="text" placeholder="Tên sản phẩm">
@@ -13,14 +13,23 @@
       </LabelInput>
 
       <!-- Giá -->
-      <LabelInput id="price" v-model="form.price" type="number" placeholder="Giá">
+      <LabelInput id="price" v-model="form.price" type="text" placeholder="Giá">
         <template #label>Giá</template>
       </LabelInput>
 
       <!-- Số lượng -->
-      <LabelInput id="quantity" v-model="form.quantity" type="number" placeholder="Số lượng">
+      <LabelInput id="quantity" v-model="form.quantity" type="text" placeholder="Số lượng">
         <template #label>Số lượng</template>
       </LabelInput>
+
+      <!-- Trạng thái -->
+      <div>
+        <label class="block text-lg font-medium">Trạng thái</label>
+        <select v-model="form.is_active" class="w-full p-2 border rounded-lg">
+          <option :value="true">Hoạt động</option>
+          <option :value="false">Không hoạt động</option>
+        </select>
+      </div>
 
       <!-- Chọn danh mục -->
       <div>
@@ -60,12 +69,12 @@
 
       <!-- Nút hành động -->
       <div class="flex justify-end space-x-5">
-        <button @click="createProduct"
+        <button @click="updateProduct"
           class="bg-blue-500 text-white text-lg px-6 py-3 rounded-lg transition-all duration-200 hover:bg-gray-800">
-          Lưu
+          Cập nhật
         </button>
 
-        <button @click="cancelCreate"
+        <button @click="cancelEdit"
           class="bg-red-500 text-white text-lg px-6 py-3 rounded-lg transition-all duration-200 hover:bg-gray-800">
           Thoát
         </button>
@@ -75,34 +84,50 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted } from 'vue';
 // @ts-ignore
 import Dropzone from 'dropzone';
 import LabelInput from '~/components/admin/molecules/LabelInputBlack.vue';
 import { useToast } from 'vue-toastification';
-import { useRouter } from '#app';
+import { useRouter, useRoute } from '#app';
 
 interface Category {
   id: number;
   name: string;
 }
 
+interface Product {
+  id: number;
+  name: string;
+  description: string;
+  mainimage: string;
+  is_active: boolean;
+  quantity: string;
+  price: string;
+  category: number;
+  category_name: string;
+  images: { id: number; image: string; product: number }[];
+}
+
 const toast = useToast();
 const router = useRouter();
+const route = useRoute();
+const productId = route.params.id as string;
 
-// Form data
-const form = ref({
+const form = ref<Partial<Product>>({
   name: '',
   description: '',
   price: '',
   quantity: '',
-  category: '',
-  mainimage: null as File | null,
-  uploaded_images: [] as File[],
+  category: 0,
+  is_active: true,
+  mainimage: '',
+  images: [],
 });
 
-// Danh sách danh mục
 const categories = ref<Category[]>([]);
+const mainImagePreview = ref<string | null>(null);
+const previewImages = ref<string[]>([]);
 
 const fetchCategories = async () => {
   try {
@@ -115,12 +140,54 @@ const fetchCategories = async () => {
   }
 };
 
-// Xử lý Dropzone cho hình ảnh chính
-const mainImageDropzoneRef = ref(null);
-const mainImagePreview = ref<string | null>(null);
+const fetchProduct = async () => {
+  try {
+    const data = await useApiFetch<Product>(`/catalogue/products/${productId}`);
+    form.value = {
+      ...data,
+      price: String(data.price),
+      quantity: String(data.quantity),
+    };
+    mainImagePreview.value = data.mainimage || null;
+    previewImages.value = data.images ? data.images.map(img => img.image) : [];
+  } catch (error) {
+    console.error("Error fetching product:", error);
+  }
+};
 
-onMounted(() => {
-  const mainImageDropzone = new Dropzone(mainImageDropzoneRef.value, {
+const removeMainImage = () => {
+  mainImagePreview.value = null;
+  form.value.mainimage = '';
+};
+
+const removeImage = (index: number) => {
+  previewImages.value.splice(index, 1);
+  form.value.images?.splice(index, 1);
+};
+
+const updateProduct = () => {
+  const payload = {
+    ...form.value,
+    quantity: Number(form.value.quantity),
+  };
+  console.log("Updating product...", payload);
+  // Gọi API cập nhật sản phẩm ở đây
+};
+
+const cancelEdit = () => {
+  router.push('/product_management');
+};
+
+const mainImageDropzoneRef = ref<HTMLFormElement | null>(null);
+const dropzoneRef = ref<HTMLFormElement | null>(null);
+let mainImageDropzone: Dropzone;
+let dropzoneInstance: Dropzone;
+
+onMounted(async () => {
+  await fetchProduct();
+  await fetchCategories();
+
+  mainImageDropzone = new Dropzone(mainImageDropzoneRef.value!, {
     url: "/fake-upload",
     autoProcessQueue: false,
     acceptedFiles: "image/*",
@@ -133,27 +200,14 @@ onMounted(() => {
         const reader = new FileReader();
         reader.onload = (event) => {
           mainImagePreview.value = event.target?.result as string;
-          form.value.mainimage = file;
+          form.value.mainimage = event.target?.result as string;
         };
         reader.readAsDataURL(file);
       });
     },
   });
-});
 
-// Xóa ảnh chính
-const removeMainImage = () => {
-  mainImagePreview.value = null;
-  form.value.mainimage = null;
-};
-
-// Dropzone setup cho hình ảnh bổ sung
-const dropzoneRef = ref(null);
-const previewImages = ref<string[]>([]);
-let dropzoneInstance: Dropzone | null = null;
-
-onMounted(() => {
-  dropzoneInstance = new Dropzone(dropzoneRef.value, {
+  dropzoneInstance = new Dropzone(dropzoneRef.value!, {
     url: "/fake-upload",
     autoProcessQueue: false,
     acceptedFiles: "image/*",
@@ -165,52 +219,12 @@ onMounted(() => {
         const reader = new FileReader();
         reader.onload = (event) => {
           previewImages.value.push(event.target?.result as string);
-          form.value.uploaded_images.push(file);
+          form.value.images?.push({ id: Date.now(), image: event.target?.result as string, product: Number(productId) });
         };
         reader.readAsDataURL(file);
       });
     },
   });
 });
-
-// Xóa ảnh khỏi danh sách preview
-const removeImage = (index: number) => {
-  previewImages.value.splice(index, 1);
-  form.value.uploaded_images.splice(index, 1);
-};
-
-onBeforeUnmount(() => {
-  if (dropzoneInstance) {
-    dropzoneInstance.destroy();
-  }
-});
-
-const emit = defineEmits(['createProduct']);
-
-const createProduct = () => {
-  console.log("Submitting product form...", form.value);
-  emit("createProduct", form.value);
-};
-
-const cancelCreate = () => {
-  console.log("Thoát");
-
-  toast.warning(h("div", [
-    "Bạn có chắc chắn muốn thoát không? Dữ liệu chưa lưu sẽ bị mất.",
-    h("button", {
-      onClick: () => {
-        toast.clear(); // Xóa thông báo
-        router.push('/admin/products'); // Điều hướng sau khi xác nhận
-      },
-      class: "ml-4 px-3 py-1 bg-red-500 text-white rounded hover:bg-red-700 transition"
-    }, "Thoát")
-  ]), {
-    timeout: 10000,
-    closeOnClick: false,
-  });
-}
-
-onMounted(async () => {
-  await fetchCategories();
-});
 </script>
+
