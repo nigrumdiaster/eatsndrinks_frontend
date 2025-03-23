@@ -3,15 +3,35 @@
     <!-- Bảng hiển thị danh sách -->
     <div class="flex">
       <EasyDataTable class="w-full h-full" :headers="headers" :items="items" hide-footer>
-        <template #item-actions="{ id }">
+        <template #item-actions="{ id, is_active }">
           <div class="flex space-x-2">
             <NuxtLink :to="`/${entity}/${id}`">
               <button class="h-5 w-5"><img src="/images/edit_icon_table.png" alt="Edit"></button>
             </NuxtLink>
-            <button @click="emit('delete', id)" class="h-6 w-6"><img src="/images/delete_icon_table.png" alt="Delete"></button>
+            <button 
+              @click="emit(is_active === '✅ Active' ? 'delete' : 'activate', id)" 
+              class="h-6 w-6"
+            >
+              <img 
+                :src="is_active === '✅ Active' ? '/images/delete_icon_table.png' : '/images/activate_icon.png'" 
+                :alt="is_active === '✅ Active' ? 'Delete' : 'Activate'"
+              />
+            </button>
           </div>
         </template>
-        <slot></slot>
+        <template #item-actions_order="{ id }">
+          <div class="flex space-x-2">
+            <NuxtLink :to="`/${entity}/${id}`">
+              <button class="h-5 w-5"><img src="/images/edit_icon_table.png" alt="Edit"></button>
+            </NuxtLink>
+          </div>
+        </template>
+        
+        <!-- mainimage of product -->>
+        <template #item-mainimage="{ mainimage }">
+          <img :src="mainimage" alt="Product Image" class="w-20 h-20 object-cover" onerror="this.src='/images/default_product.png'" />
+        </template>
+
       </EasyDataTable>
     </div>
 
@@ -26,13 +46,14 @@
         </div>
       </div>
       <vue-awesome-paginate v-model="currentPage" :total-items="totalItems" :items-per-page="limit" :max-pages-shown="5"
-        @update:modelValue="emit('pageChange', currentPage)" />
+        @update:modelValue="updatePage" />
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, watch, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 const props = defineProps({
   headers: { type: Array, required: true },
@@ -42,22 +63,18 @@ const props = defineProps({
   entity: { type: String, required: true },
 });
 
-const emit = defineEmits(["delete", "pageChange"]);
+const emit = defineEmits(["delete", "activate", "pageChange"]);
+const route = useRoute();
+const router = useRouter();
 
-const currentPage = ref(1);
+const currentPage = ref(Number(route.query.page) || 1);
 
-onMounted(() => {
-  if (import.meta.client) {
-    const storedPage = localStorage.getItem(`${props.entity}_currentPage`);
-    currentPage.value = storedPage ? Number(storedPage) : 1;
-  }
+const updatePage = (newPage: number) => {
+  router.push({ query: { ...route.query, page: newPage } });
+  emit("pageChange", newPage);
+};
+
+watch(() => route.query.page, (newPage) => {
+  currentPage.value = Number(newPage) || 1;
 });
-
-// Lưu trạng thái trang riêng cho từng bảng
-watch(currentPage, (newPage) => {
-  if (import.meta.client) {
-    localStorage.setItem(`${props.entity}_currentPage`, newPage.toString());
-  }
-});
-
 </script>
