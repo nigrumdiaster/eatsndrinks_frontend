@@ -32,16 +32,30 @@
         </select>
       </div>
 
-      <!-- Hình ảnh chính -->
+      <!-- Hình ảnh chính với Dropzone -->
       <div>
         <label class="block text-lg font-medium">Hình ảnh chính</label>
-        <input type="file" @change="handleMainImageUpload" class="w-full p-2 border rounded-lg" />
+        <form ref="mainImageDropzoneRef" class="dropzone border-2 border-dashed p-6 rounded-lg"></form>
+        <div v-if="mainImagePreview" class="mt-4 relative">
+          <img :src="mainImagePreview" class="w-32 h-32 object-cover rounded-lg shadow-md" />
+          <button @click="removeMainImage" class="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full">
+            ✕
+          </button>
+        </div>
       </div>
 
-      <!-- Hình ảnh bổ sung -->
+      <!-- Dropzone cho hình ảnh bổ sung -->
       <div>
         <label class="block text-lg font-medium">Hình ảnh sản phẩm</label>
-        <input type="file" multiple @change="handleImagesUpload" class="w-full p-2 border rounded-lg" />
+        <form ref="dropzoneRef" class="dropzone border-2 border-dashed p-6 rounded-lg"></form>
+        <div class="preview-container mt-4 flex flex-wrap gap-2">
+          <div v-for="(image, index) in previewImages" :key="index" class="relative">
+            <img :src="image" class="w-24 h-24 object-cover rounded-lg shadow-md" />
+            <button @click="removeImage(index)" class="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full">
+              ✕
+            </button>
+          </div>
+        </div>
       </div>
 
       <!-- Nút hành động -->
@@ -61,7 +75,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits } from 'vue';
+import { ref, defineEmits, onMounted, onBeforeUnmount } from 'vue';
+// @ts-ignore
+import Dropzone from 'dropzone';
 import LabelInput from '~/components/admin/molecules/LabelInputBlack.vue';
 import { useToast } from 'vue-toastification';
 import { useRouter } from '#app';
@@ -70,7 +86,6 @@ interface Category {
   id: number;
   name: string;
 }
-
 
 const toast = useToast();
 const router = useRouter();
@@ -82,8 +97,8 @@ const form = ref({
   price: '',
   quantity: '',
   category: '',
-  mainimage: null as File | null,  // Cho phép File hoặc null
-  uploaded_images: [] as File[],   // Mảng chứa nhiều File
+  mainimage: null as File | null,
+  uploaded_images: [] as File[],
 });
 
 // Danh sách danh mục
@@ -100,22 +115,75 @@ const fetchCategories = async () => {
   }
 };
 
+// Xử lý Dropzone cho hình ảnh chính
+const mainImageDropzoneRef = ref(null);
+const mainImagePreview = ref<string | null>(null);
 
-// Xử lý tải lên hình ảnh chính
-const handleMainImageUpload = (event: Event) => {
-  const file = (event.target as HTMLInputElement).files?.[0];
-  if (file) {
-    form.value.mainimage = file;
-  }
+onMounted(() => {
+  const mainImageDropzone = new Dropzone(mainImageDropzoneRef.value, {
+    url: "/fake-upload",
+    autoProcessQueue: false,
+    acceptedFiles: "image/*",
+    maxFiles: 1,
+    thumbnailWidth: 150,
+    thumbnailHeight: 150,
+    previewsContainer: false,
+    init: function () {
+      this.on("addedfile", (file: File) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          mainImagePreview.value = event.target?.result as string;
+          form.value.mainimage = file;
+        };
+        reader.readAsDataURL(file);
+      });
+    },
+  });
+});
+
+// Xóa ảnh chính
+const removeMainImage = () => {
+  mainImagePreview.value = null;
+  form.value.mainimage = null;
 };
 
-// Xử lý tải lên nhiều ảnh
-const handleImagesUpload = (event: Event) => {
-  const files = (event.target as HTMLInputElement).files;
-  if (files) {
-    form.value.uploaded_images = Array.from(files);
-  }
+// Dropzone setup cho hình ảnh bổ sung
+const dropzoneRef = ref(null);
+const previewImages = ref<string[]>([]);
+let dropzoneInstance: Dropzone | null = null;
+
+onMounted(() => {
+  dropzoneInstance = new Dropzone(dropzoneRef.value, {
+    url: "/fake-upload",
+    autoProcessQueue: false,
+    acceptedFiles: "image/*",
+    thumbnailWidth: 120,
+    thumbnailHeight: 120,
+    previewsContainer: false,
+    init: function () {
+      this.on("addedfile", (file: File) => {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          previewImages.value.push(event.target?.result as string);
+          form.value.uploaded_images.push(file);
+        };
+        reader.readAsDataURL(file);
+      });
+    },
+  });
+});
+
+// Xóa ảnh khỏi danh sách preview
+const removeImage = (index: number) => {
+  previewImages.value.splice(index, 1);
+  form.value.uploaded_images.splice(index, 1);
 };
+
+onBeforeUnmount(() => {
+  if (dropzoneInstance) {
+    dropzoneInstance.destroy();
+  }
+});
 
 const emit = defineEmits(['createProduct']);
 
