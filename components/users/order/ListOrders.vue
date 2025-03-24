@@ -3,14 +3,13 @@
     <h1 class="text-2xl font-bold mb-4">Danh sách đơn hàng</h1>
     
     <div class="bg-gray-200 p-3 rounded-lg font-semibold flex justify-between">
-      <span class="w-1/6 text-center">Mã đơn hàng</span>
-      <span class="w-1/6 text-center">Người dùng</span>
-      <span class="w-1/6 text-center">Số điện thoại</span>
-      <span class="w-1/6 text-center">Địa chỉ</span>
-      <span class="w-1/6 text-center">Tổng tiền</span>
-      <span class="w-1/6 text-center">Trạng thái</span>
-      <span class="w-1/6 text-center">Thanh toán</span>
-      <span class="w-1/6 text-center">Thời gian</span>
+      <span class="w-1/5 text-center">Mã đơn hàng</span>
+      <span class="w-1/5 text-center">Số điện thoại</span>
+      <span class="w-1/5 text-center">Tổng tiền</span>
+      <span class="w-1/5 text-center">Trạng thái</span>
+      <span class="w-1/5 text-center">Thanh toán</span>
+      <span class="w-1/5 text-center">Trạng thái TT</span>
+      <span class="w-1/5 text-center">Thời gian</span>
     </div>
     
     <div class="flex flex-col space-y-4 mt-4">
@@ -20,14 +19,25 @@
         :to="`/user/orders/${order.id}`" 
         class="flex border rounded-lg p-4 shadow-md bg-white items-center cursor-pointer hover:bg-gray-100 transition"
       >
-        <span class="w-1/6 text-center">{{ order.id }}</span>
-        <span class="w-1/6 text-center">{{ order.user }}</span>
-        <span class="w-1/6 text-center">{{ order.phone_number }}</span>
-        <span class="w-1/6 text-center">{{ order.address }}</span>
-        <span class="w-1/6 text-center">{{ formatPrice(order.total_price) }}</span>
-        <span class="w-1/6 text-center">{{ getStatusText(order.status) }}</span>
-        <span class="w-1/6 text-center">{{ getPaymentMethodText(order.payment_method) }}</span>
-        <span class="w-1/6 text-center">{{ formatDate(order.created_at) }}</span>
+        <span class="w-1/5 text-center">{{ order.id }}</span>
+        <span class="w-1/5 text-center">{{ order.phone_number }}</span>
+        <span class="w-1/5 text-center">{{ formatPrice(order.total_price) }}</span>
+        <span class="w-1/5 text-center">
+          <span class="px-2 py-1 rounded-full text-white" :class="getStatusClass(order.status)">
+            {{ getStatusText(order.status) }}
+          </span>
+        </span>
+        <span class="w-1/5 text-center">
+          <span class="px-2 py-1 rounded-full text-white" :class="getPaymentMethodClass(order.payment_method)">
+            {{ getPaymentMethodText(order.payment_method) }}
+          </span>
+        </span>
+        <span class="w-1/5 text-center">
+          <span class="px-2 py-1 rounded-full text-white" :class="getPaymentStatusClass(order.payment_status)">
+            {{ getPaymentStatusText(order.payment_status) }}
+          </span>
+        </span>
+        <span class="w-1/5 text-center">{{ formatDate(order.created_at) }}</span>
       </RouterLink>
     </div>
   </div>
@@ -48,9 +58,7 @@ interface OrderItem {
 
 interface Order {
   id: number;
-  user: number;
   phone_number: string;
-  address: string;
   total_price: number;
   status: string;
   payment_method: string;
@@ -69,7 +77,6 @@ const STATUS_CHOICES: Record<string, string> = {
   "dghh": "Đã Giao Hàng",
   "khh": "Khách Hàng Hủy",
   "adh": "Admin Hủy",
-  "dtt": "Đã Thanh Toán",
 };
 
 const PAYMENT_METHOD_CHOICES: Record<string, string> = {
@@ -77,8 +84,39 @@ const PAYMENT_METHOD_CHOICES: Record<string, string> = {
   "ppl": "Thanh toán qua PayPal",
 };
 
+const PAYMENT_STATUS_CHOICES: Record<string, string> = {
+  "pending": "Chờ thanh toán",
+  "paid": "Đã thanh toán",
+};
+
 const getStatusText = (status: string): string => STATUS_CHOICES[status] || "Không xác định";
 const getPaymentMethodText = (method: string): string => PAYMENT_METHOD_CHOICES[method] || "Không xác định";
+const getPaymentStatusText = (status: string): string => PAYMENT_STATUS_CHOICES[status] || "Không xác định";
+
+const getStatusClass = (status: string) => {
+  return {
+    "cxl": "bg-gray-500",
+    "dcbh": "bg-blue-500",
+    "dgh": "bg-yellow-500",
+    "dghh": "bg-green-500",
+    "khh": "bg-red-500",
+    "adh": "bg-red-700",
+  }[status] || "bg-gray-400";
+};
+
+const getPaymentMethodClass = (method: string) => {
+  return {
+    "cod": "bg-purple-500",
+    "ppl": "bg-indigo-500",
+  }[method] || "bg-gray-400";
+};
+
+const getPaymentStatusClass = (status: string) => {
+  return {
+    "pending": "bg-orange-500",
+    "paid": "bg-green-600",
+  }[status] || "bg-gray-400";
+};
 
 const formatPrice = (value: number) => new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
 const formatDate = (datetime: string): string => new Date(datetime).toLocaleDateString("vi-VN");

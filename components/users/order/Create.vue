@@ -149,8 +149,8 @@ const placeOrder = async () => {
 
     // Chuyển hướng về trang Home sau khi đặt hàng thành công
     setTimeout(() => {
-      router.push("/");
-    }, 2000); // Chờ 2 giây để người dùng kịp nhìn thấy thông báo
+      router.push("/user/orders");
+    }, 1000); // Chờ 2 giây để người dùng kịp nhìn thấy thông báo
   } catch (error: any) {
     console.error("❌ Lỗi khi đặt hàng:", error);
 
