@@ -112,5 +112,11 @@ export default <RouterConfig>{
             component: () => import('~/pages/admin/ordermgmt/List.vue'),
             meta: { middleware: 'admin' },
         },
+        {
+            name: 'admin_order_management_id', // ✅ Dynamic route for product details
+            path: '/admin/orders/:id', // Dynamic segment ":id"
+            component: () => import('~/pages/admin/ordermgmt/[id].vue'),
+            meta: { middleware: 'admin' },
+        },
     ]
 };

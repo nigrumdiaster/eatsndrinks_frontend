@@ -19,8 +19,8 @@
   </template>
   
   <script setup lang="ts">
-  import Label from '~/components/atoms/Label/Label.vue';
-  import Input from '~/components/atoms/Input/Input.vue';
+  import Label from '~/components/admin/atoms/Label/Label.vue';
+  import Input from '~/components/admin/atoms/Input/Input.vue';
 
   const props = defineProps({
     id: {

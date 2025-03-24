@@ -1,0 +1,153 @@
+<template>
+  <div class="flex flex-col bg-white p-6 w-full h-full">
+    <strong class="text-2xl mb-3">Chỉnh sửa đơn hàng</strong>
+    <div v-if="order" class="space-y-6">
+      <LabelInput id="order_id" :model-value="String(order.id)" type="text" disabled>
+        <template #label>Mã đơn hàng</template>
+      </LabelInput>
+
+      <LabelInput id="user_id" :model-value="String(order.user)" type="text" disabled>
+        <template #label>ID Người dùng</template>
+      </LabelInput>
+
+      <LabelInput id="phone_number" v-model="order.phone_number" type="text" placeholder="Số điện thoại">
+        <template #label>
+          <span class="text-teal-600">Số điện thoại</span>
+        </template>
+      </LabelInput>
+
+      <LabelInput id="address" v-model="order.address" type="text" placeholder="Địa chỉ giao hàng">
+        <template #label>
+          <span class="text-teal-600">Địa chỉ</span>
+        </template>
+      </LabelInput>
+
+      <label class="text-teal-600 font-semibold">Trạng thái đơn hàng</label>
+      <select v-model="order.status" class="border p-2 rounded w-full">
+        <option v-for="(label, value) in statusChoices" :key="value" :value="value">{{ label }}</option>
+      </select>
+
+      <label class="text-teal-600 font-semibold">Phương thức thanh toán</label>
+      <select v-model="order.payment_method" class="border p-2 rounded w-full">
+        <option v-for="(label, value) in paymentMethodChoices" :key="value" :value="value">{{ label }}</option>
+      </select>
+
+      <label class="text-teal-600 font-semibold">Trạng thái thanh toán</label>
+      <select v-model="order.payment_status" class="border p-2 rounded w-full">
+        <option v-for="(label, value) in paymentStatusChoices" :key="value" :value="value">{{ label }}</option>
+      </select>
+
+      <h2 class="text-xl font-semibold mt-6">Sản phẩm trong đơn hàng</h2>
+      <div class="mt-4 space-y-4">
+        <div v-for="item in order?.items" :key="item.product" class="flex border p-4 rounded-lg shadow-md items-center">
+          <img :src="item.product_image" alt="Product Image" class="w-24 h-24 object-cover rounded-md">
+          <div class="ml-4">
+            <h3 class="text-lg font-semibold">{{ item.product_name }}</h3>
+            <p><strong>Đơn giá:</strong> {{ formatPrice(item.unit_price) }}</p>
+            <p><strong>Số lượng:</strong> {{ item.quantity }}</p>
+          </div>
+          <div class="ml-auto text-right">
+            <p><strong>Thành tiền:</strong> {{ formatPrice(item.total_price) }}</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="mt-6 p-4 bg-gray-100 rounded-lg text-lg font-semibold text-right">
+        Tổng cộng: {{ formatPrice(order.total_price) }}
+      </div>
+    </div>
+    <p v-else class="text-center text-gray-500">Đang tải dữ liệu...</p>
+
+    <!-- Buttons -->
+    <div class="flex justify-end mt-6 space-x-3">
+      <button @click="saveChanges"
+        class="bg-blue-500 text-white text-lg px-6 py-3 rounded-lg transition-all duration-200 hover:bg-gray-800">
+        Lưu thay đổi
+      </button>
+
+      <button @click="cancelChanges"
+        class="bg-red-500 text-white text-lg px-6 py-3 rounded-lg transition-all duration-200 hover:bg-gray-800">
+        Thoát
+      </button>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import LabelInput from "~/components/admin/molecules/LabelInputBlack.vue";
+import { defineProps, defineEmits, ref, onMounted } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
+import { useRuntimeConfig } from "#imports";
+import Label from "~/components/admin/atoms/Label/Label.vue";
+const route = useRoute();
+const router = useRouter();
+const toast = useToast();
+const config = useRuntimeConfig();
+const token = useCookie("access_token");
+const order = ref(null);
+
+const statusChoices = {
+  "cxl": "Chưa Xử Lý",
+  "dcbh": "Đang Chuẩn Bị Hàng",
+  "dgh": "Đang Giao Hàng",
+  "dghh": "Đã Giao Hàng",
+  "khh": "Khách Hàng Hủy",
+  "adh": "Admin Hủy"
+};
+
+const paymentMethodChoices = {
+  "cod": "Thanh toán khi giao hàng",
+  "ppl": "Thanh toán qua PayPal"
+};
+
+const paymentStatusChoices = {
+  "pending": "Chờ thanh toán",
+  "paid": "Đã thanh toán"
+};
+
+const emit = defineEmits(["save", "cancel"]);
+
+const fetchOrder = async () => {
+  try {
+    const response = await $fetch(`${config.public.apiBase}/order/admin/order/${route.params.id}/`, {
+      headers: { Authorization: `Bearer ${token.value}` },
+    });
+    order.value = response;
+  } catch (error) {
+    console.error("Lỗi khi tải đơn hàng:", error);
+    toast.error("Không tìm thấy thông tin đơn hàng!");
+    router.push("/admin/orders");
+  }
+};
+
+const saveChanges = async () => {
+  try {
+    await $fetch(`${config.public.apiBase}/order/admin/order/${route.params.id}/`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${token.value}` },
+      body: {
+        phone_number: order.value.phone_number,
+        address: order.value.address,
+        status: order.value.status,
+        payment_method: order.value.payment_method,
+        payment_status: order.value.payment_status,
+      },
+    });
+    toast.success("Cập nhật đơn hàng thành công!");
+  } catch (error) {
+    console.error("Lỗi khi cập nhật đơn hàng:", error);
+    toast.error("Cập nhật thất bại!");
+  }
+};
+
+const cancelChanges = () => {
+  emit("cancel");
+};
+
+const formatPrice = (price) => {
+  return new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+};
+
+onMounted(fetchOrder);
+</script>
