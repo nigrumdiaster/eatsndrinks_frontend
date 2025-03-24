@@ -6,18 +6,43 @@
         <template #label>Tên đăng nhập</template>
       </LabelInput>
       <span class="text-red-500">(*) Chỉ có thể chỉnh sửa các mục bên dưới</span>
-      <LabelInput id="fullname" v-model="user.fullname" type="text" placeholder="Họ và tên">
+
+      <LabelInput id="first_name" v-model="user.first_name" type="text" placeholder="Họ">
         <template #label>
-          <span class="text-teal-600">Họ và tên</span>
+          <span class="text-teal-600">Họ</span>
         </template>
       </LabelInput>
 
-      <LabelInput id="email" v-model="user.email" type="email" placeholder="Email">
+      <LabelInput id="last_name" v-model="user.last_name" type="text" placeholder="Tên">
         <template #label>
-          <span class="text-teal-600">Email</span>
+          <span class="text-teal-600">Tên</span>
         </template>
       </LabelInput>
+
+      <LabelInput id="phone_number" v-model="user.phone_number" type="text" placeholder="Số điện thoại">
+        <template #label>
+          <span class="text-teal-600">Số điện thoại</span>
+        </template>
+      </LabelInput>
+
+      <LabelInput id="address" v-model="user.address" type="text" placeholder="Địa chỉ">
+        <template #label>
+          <span class="text-teal-600">Địa chỉ</span>
+        </template>
+      </LabelInput>
+
+      <LabelInput id="date_of_birth" v-model="user.date_of_birth" type="date">
+        <template #label>
+          <span class="text-teal-600">Ngày sinh</span>
+        </template>
+      </LabelInput>
+
+      <div class="flex items-center space-x-2">
+        <input id="is_active" v-model="user.is_active" type="checkbox" class="w-5 h-5">
+        <label for="is_active" class="text-teal-600">Kích hoạt tài khoản</label>
+      </div>
     </div>
+
     <!-- Buttons -->
     <div class="flex justify-end mt-auto space-x-3">
       <button @click="saveChanges"
@@ -30,9 +55,6 @@
         Thoát
       </button>
     </div>
-
-
-
   </div>
 </template>
 
@@ -49,7 +71,6 @@ const props = defineProps({
 
 const saveChanges = () => {
   emit("save", props.user);
-
 };
 
 const cancelChanges = () => {
