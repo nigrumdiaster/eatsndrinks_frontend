@@ -4,7 +4,7 @@
       <Breadcrumb>
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
         <BreadcrumbItem>Quản trị hệ thống</BreadcrumbItem>
-        <BreadcrumbItem href="/user_management">Tài khoản</BreadcrumbItem>
+        <BreadcrumbItem href="/admin/users">Tài khoản</BreadcrumbItem>
       </Breadcrumb>
     </template>
 

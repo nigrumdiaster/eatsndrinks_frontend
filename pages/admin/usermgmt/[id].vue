@@ -3,7 +3,7 @@
     <template #breadcrumb>
       <Breadcrumb>
         <BreadcrumbItem href="/">Home</BreadcrumbItem>
-        <BreadcrumbItem href="/user_management">Tài khoản</BreadcrumbItem>
+        <BreadcrumbItem href="/admin/users">Tài khoản</BreadcrumbItem>
         <BreadcrumbItem>Chỉnh sửa</BreadcrumbItem>
       </Breadcrumb>
     </template>
@@ -43,7 +43,7 @@ const fetchUser = async () => {
     const config = useRuntimeConfig();
     const token = useCookie("access_token");
 
-    const response = await $fetch<User>(`${config.public.apiBase}/users/admin/user/${route.params.id}`, {
+    const response = await $fetch<User>(`${config.public.apiBase}/users/admin/user/${route.params.id}/`, {
       headers: { Authorization: `Bearer ${token.value}` },
     });
     console.log("User info:", response);
@@ -60,7 +60,7 @@ const updateUser = async (updatedUser: User) => {
     const config = useRuntimeConfig();
     const token = useCookie("access_token");
 
-    await $fetch(`${config.public.apiBase}/users/admin/user/${route.params.id}`, {
+    await $fetch(`${config.public.apiBase}/users/admin/user/${route.params.id}/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${token.value}` },
       body: {
@@ -74,7 +74,7 @@ const updateUser = async (updatedUser: User) => {
     });
 
     toast.success("Cập nhật thành công!");
-    router.push("/admin/users");
+    await fetchUser();
   } catch (error) {
     console.error("Lỗi khi cập nhật user:", error);
     toast.error("Cập nhật thất bại!");
@@ -88,7 +88,7 @@ const goBack = () => {
       h("button", {
         onClick: () => {
           toast.clear();
-          router.push("/user_management");
+          router.push("/admin/users");
         },
         class: "px-4 py-2 bg-red-500 text-white rounded hover:bg-red-700 transition",
       }, "Thoát"),

@@ -56,7 +56,7 @@ const totalOrders = ref(0);
 const route = useRoute();
 const router = useRouter();
 const limit = ref(10);
-const entity = "admin/order";
+const entity = "admin/orders";
 const toast = useToast();
 const headers = [
   { text: "ID", value: "id" },
