@@ -42,7 +42,9 @@
         <div v-for="item in order?.items" :key="item.product" class="flex border p-4 rounded-lg shadow-md items-center">
           <img :src="item.product_image" alt="Product Image" class="w-24 h-24 object-cover rounded-md">
           <div class="ml-4">
-            <h3 class="text-lg font-semibold">{{ item.product_name }}</h3>
+            <router-link :to="`/product/${item.product}`" class="text-lg font-semibold text-yellow-600 hover:underline">
+              {{ item.product_name }}
+            </router-link>
             <p><strong>Đơn giá:</strong> {{ formatPrice(item.unit_price) }}</p>
             <p><strong>Số lượng:</strong> {{ item.quantity }}</p>
           </div>
@@ -51,7 +53,7 @@
           </div>
         </div>
       </div>
-      
+
       <div class="mt-6 p-4 bg-gray-100 rounded-lg text-lg font-semibold text-right">
         Tổng cộng: {{ formatPrice(order.total_price) }}
       </div>
