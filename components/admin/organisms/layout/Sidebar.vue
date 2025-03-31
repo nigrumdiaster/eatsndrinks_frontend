@@ -10,18 +10,20 @@
     <!-- Sidebar Items -->
     <div class="mt-2 overflow-hidden whitespace-nowrap">
       <ul class="list-none px-1">
-        <SidebarItem @click="sidebaropen = true" icon="/images/home.svg" labelSidebarItem="Dashboard" linkSidebarItem="/"
-          :sidebaropen="sidebaropen" />
+        <SidebarItem @click="sidebaropen = true" icon="/images/home.svg" labelSidebarItem="Dashboard"
+          linkSidebarItem="/" :sidebaropen="sidebaropen" />
 
         <SidebarDropdown icon="/images/manage.svg" labelSidebarItem="Quản trị hệ thống"
           @toggleDropdown="toggleDropdown('qtht')" :sidebaropen="sidebaropen" :dropdownOpen="dropdownStates.qtht"
           :items="itemsQTHT" />
 
-        <SidebarItem @click="sidebaropen = true" icon="/icons/food.svg" labelSidebarItem="Quản lý sản phẩm" linkSidebarItem="/admin/products"
-          :sidebaropen="sidebaropen" />
+        <SidebarItem @click="sidebaropen = true" icon="/icons/food.svg" labelSidebarItem="Quản lý sản phẩm"
+          linkSidebarItem="/admin/products" :sidebaropen="sidebaropen" />
 
-        <SidebarItem @click="sidebaropen = true" icon="/icons/food.svg" labelSidebarItem="Quản lý đơn hàng" linkSidebarItem="/admin/orders"
-          :sidebaropen="sidebaropen" />
+        <SidebarItem @click="sidebaropen = true" icon="/icons/food.svg" labelSidebarItem="Quản lý đơn hàng"
+          linkSidebarItem="/admin/orders" :sidebaropen="sidebaropen" />
+        <SidebarItem @click="sidebaropen = true" icon="/images/home.svg" labelSidebarItem="Liên hệ"
+          linkSidebarItem="/admin/contact-us" :sidebaropen="sidebaropen" />
       </ul>
     </div>
   </div>

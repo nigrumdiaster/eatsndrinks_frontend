@@ -118,5 +118,11 @@ export default <RouterConfig>{
             component: () => import('~/pages/admin/ordermgmt/[id].vue'),
             meta: { middleware: 'admin' },
         },
+        {
+            name: 'admin_contact_us',
+            path: '/admin/contact-us',
+            component: () => import('~/pages/admin/contactus/List.vue'),
+            meta: { middleware: 'admin' },
+        },
     ]
 };
