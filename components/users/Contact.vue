@@ -31,7 +31,7 @@
                 placeholder="Subject" />
             </div>
             <div class="mb-4">
-              <textarea v-model="formdata.text"
+              <textarea v-model="formdata.content"
                 class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500" rows="4"
                 placeholder="Message"></textarea>
             </div>
@@ -64,12 +64,13 @@ import { useToast } from "vue-toastification";
 const toast = useToast();
 const errors = ref([]);
 const loading = ref(false);
-
+const config = useRuntimeConfig();
+const token = useCookie("access_token");
 const formdata = reactive({
   name: "",
   email: "",
   subject: "",
-  text: ""
+  content: ""
 });
 
 async function send() {
@@ -77,13 +78,36 @@ async function send() {
     loading.value = true;
     errors.value = [];
 
-    // Simulating API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Kiểm tra xem các trường có bị trống không
+    if (!formdata.name || !formdata.email || !formdata.subject || !formdata.content) {
+      throw new Error("All fields are required");
+    }
 
-    toast.success("Your message has been sent successfully!");
+    const response = await fetch(`${config.public.apiBase}/contact/contacts/`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token.value}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formdata),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Failed to send message");
+    }
+
+    toast.success("Đã gửi tin nhắn thành công! Chúng tôi sẽ sớm liên hệ với bạn.");
+    
+    // Reset form sau khi gửi thành công
+    formdata.name = "";
+    formdata.email = "";
+    formdata.subject = "";
+    formdata.text = "";
+
   } catch (error) {
-    errors.value = ["Please fill out all fields correctly"];
-    toast.error("All fields are required");
+    errors.value = [error.message];
+    toast.error(error.message);
   } finally {
     loading.value = false;
   }
