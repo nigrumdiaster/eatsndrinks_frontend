@@ -1,29 +1,43 @@
 <template>
-  <div class="bg-white shadow-lg rounded-lg overflow-hidden p-4 transition-transform hover:scale-105">
+  <div
+    class="bg-transparent shadow-xl rounded-2xl overflow-hidden p-6 transition-transform transform hover:scale-105 hover:shadow-2xl border border-gray-200"
+  >
     <div>
-      <div class="w-full h-48 flex justify-center items-center bg-gray-100">
-        <img v-if="product.mainimage" :src="product.mainimage" alt="product-image" class="w-full h-full object-contain" />
-        <img v-else src="/images/preloader.png" alt="loading" class="w-full h-full object-cover" />
+      <div class="w-full h-56 flex justify-center items-center rounded-t-2xl relative">
+        <img
+          v-if="product.mainimage"
+          :src="product.mainimage"
+          alt="product-image"
+          class="w-full h-full object-cover rounded-t-2xl"
+        />
+        <img
+          v-else
+          src="/images/preloader.png"
+          alt="loading"
+          class="w-full h-full object-cover rounded-t-2xl opacity-50"
+        />
+        <span class="absolute top-3 left-3 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">New</span>
       </div>
-      <div class="p-4">
-        <h5 class="text-lg font-semibold">
+      <div class="p-6">
+        <h5 class="text-xl font-bold text-gray-900">
           <NuxtLink :to="`/product/${product.id}`" class="text-yellow-600 hover:underline">
             {{ product.name }}
           </NuxtLink>
         </h5>
-        <p class="text-gray-600 text-sm mt-2">
+        <p class="text-gray-500 text-sm mt-3 line-clamp-2">
           {{ product.description }}
         </p>
-        <div class="flex items-center justify-between mt-4">
+        <div class="flex items-center justify-between mt-5">
           <div>
-            <h6 class="text-gray-700 font-semibold">
+            <h6 class="text-lg font-semibold text-gray-800">
               {{ formatPrice(product.price) }}
             </h6>
           </div>
           <button
-            class="bg-yellow-400 text-white w-10 h-10 rounded-full flex items-center justify-center hover:bg-yellow-600 transition"
-            @click="addToCart(product.id)">
-            <img src="/icons/cart_fill.svg" alt="cart icon" class="w-5 h-5" />
+            class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
+            @click="addToCart(product.id)"
+          >
+            <img src="/icons/cart_fill.svg" alt="cart icon" class="w-6 h-6" />
           </button>
         </div>
       </div>
@@ -32,7 +46,6 @@
 </template>
 
 <script lang="ts" setup>
-
 import { useCartStore } from "@/stores/cart";
 import { useToast } from "vue-toastification";
 
@@ -58,13 +71,12 @@ interface Product {
   images: ProductImage[];
 }
 
-const cartStore = useCartStore(); // Sử dụng store giỏ hàng
+const cartStore = useCartStore();
 
-// Hàm thêm vào giỏ hàng
 function addToCart(productId: number) {
   cartStore.addToCart(productId, 1);
 }
-// Định dạng giá tiền VNĐ
+
 function formatPrice(price: string | number) {
   return parseFloat(price.toString()).toLocaleString("vi-VN", {
     style: "currency",
