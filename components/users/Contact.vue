@@ -103,7 +103,7 @@ async function send() {
     formdata.name = "";
     formdata.email = "";
     formdata.subject = "";
-    formdata.text = "";
+    formdata.content = "";
 
   } catch (error) {
     errors.value = [error.message];
