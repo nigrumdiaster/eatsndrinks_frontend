@@ -13,43 +13,51 @@
           <input v-model="searchQuery" @input="filterEmails" type="text" placeholder="Tìm kiếm email hoặc nội dung..."
             class="w-full p-2 border rounded" />
         </div>
-        <ul>
-          <li v-for="email in filteredEmails" :key="email.id" @click="selectEmail(email.id)"
-            :class="{ 'bg-gray-200': email.id === selectedEmail?.id }"
-            class="p-4 cursor-pointer border-b hover:bg-gray-100 flex justify-between items-center">
-            <div>
-              <p class="font-bold">{{ email.subject }}</p>
-              <p class="text-sm text-gray-600">{{ email.email }}</p>
+        <ul class="p-4 space-y-4">
+          <div v-for="email in filteredEmails" :key="email.id" @click="selectEmail(email.id)"
+            :class="['cursor-pointer', 'rounded-xl', 'shadow', 'p-4', 'transition', 'hover:shadow-md', 'border', email.id === selectedEmail?.id ? 'bg-gray-100' : 'bg-white']">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="text-lg font-semibold">{{ email.subject }}</p>
+                <p class="text-sm text-gray-600">{{ email.email }}</p>
+              </div>
+              <div class="text-right">
+                <p class="text-xs text-gray-500">{{ formatDate(email.created_at) }}</p>
+                <p class="text-xs font-semibold" :class="email.is_replied ? 'text-green-600' : 'text-red-600'">
+                  {{ email.is_replied ? 'Đã trả lời' : 'Chưa trả lời' }}
+                </p>
+              </div>
             </div>
-            <div class="text-right">
-              <p class="text-xs text-gray-500">{{ formatDate(email.created_at) }}</p>
-              <p class="text-xs font-semibold" :class="email.is_replied ? 'text-green-600' : 'text-red-600'">
-                {{ email.is_replied ? 'Đã trả lời' : 'Chưa trả lời' }}
-              </p>
-            </div>
-          </li>
+          </div>
         </ul>
+
       </div>
 
       <div class="w-3/4 p-4">
         <div v-if="selectedEmail" class="mt-4">
           <h2 class="text-xl font-bold">{{ selectedEmail.subject }}</h2>
-          <p class="text-gray-600">From: {{ selectedEmail.email }}</p>
-          <p class="text-gray-500 text-sm">Gửi ngày: {{ formatDate(selectedEmail.created_at) }}</p>
+          <div class="flex justify-between items-center">
+            <p class="text-gray-600">Từ: {{ selectedEmail.email }}</p>
+            <p class="text-gray-500 text-sm">Gửi ngày: {{ formatDate(selectedEmail.created_at) }}</p>
+          </div>
           <p v-if="selectedEmail.is_replied" class="text-green-600 font-semibold">Trạng thái: Đã trả lời</p>
           <p v-else class="text-red-600 font-semibold">Trạng thái: Chưa trả lời</p>
-          <div class="border p-4 mt-2">{{ selectedEmail.content }}</div>
+          <div class="border p-4 mt-2 h-64 overflow-y-auto bg-gray-50 rounded mb-10">
+            {{ selectedEmail.content }}
+          </div>
+
           <h3 class="text-lg font-bold">Reply:</h3>
-
-
 
           <ClientOnly>
             <Editor v-model="editorData" />
           </ClientOnly>
 
-          <button @click="sendReply" class="mt-2 p-2 bg-blue-500 text-white rounded">
-            <span>Send</span>
-          </button>
+          <div class="mt-2 text-right">
+            <button @click="sendReply" class="p-2 bg-blue-500 text-white rounded">
+              <span>Send</span>
+            </button>
+          </div>
+
         </div>
 
         <p v-else>Chọn tin nhắn để xem nội dung</p>
