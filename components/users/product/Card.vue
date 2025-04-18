@@ -16,23 +16,52 @@
           alt="loading"
           class="w-full h-full object-cover rounded-t-2xl opacity-50"
         />
-        <span class="absolute top-3 left-3 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase">New</span>
+        <span
+          v-if="product.is_flash_sale_active"
+          class="absolute top-3 left-3 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold uppercase"
+        >
+          Flash Sale
+        </span>
+        <span
+          v-else
+          class="absolute top-3 left-3 bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase"
+        >
+          New
+        </span>
       </div>
+
       <div class="p-6">
         <h5 class="text-xl font-bold text-gray-900">
           <NuxtLink :to="`/product/${product.id}`" class="text-yellow-600 hover:underline">
             {{ product.name }}
           </NuxtLink>
         </h5>
+
         <p class="text-gray-500 text-sm mt-3 line-clamp-2">
           {{ product.description }}
         </p>
+
+        <div v-if="product.is_flash_sale_active && countdown" class="mt-3 text-sm text-red-600 font-medium">
+          ⏰ Kết thúc sau: <span class="font-bold">{{ countdown }}</span>
+        </div>
+
         <div class="flex items-center justify-between mt-5">
           <div>
             <h6 class="text-lg font-semibold text-gray-800">
-              {{ formatPrice(product.price) }}
+              <span v-if="product.is_flash_sale_active && product.current_price">
+                <span class="text-red-600">
+                  {{ formatPrice(product.current_price) }}
+                </span>
+                <span class="line-through text-sm text-gray-400 ml-2">
+                  {{ formatPrice(product.price) }}
+                </span>
+              </span>
+              <span v-else>
+                {{ formatPrice(product.price) }}
+              </span>
             </h6>
           </div>
+
           <button
             class="bg-gradient-to-r from-yellow-400 to-yellow-600 text-white w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 transition-transform shadow-lg"
             @click="addToCart(product.id)"
@@ -46,41 +75,81 @@
 </template>
 
 <script lang="ts" setup>
-import { useCartStore } from "@/stores/cart";
-import { useToast } from "vue-toastification";
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { useCartStore } from "@/stores/cart"
+import { useToast } from "vue-toastification"
+import dayjs from 'dayjs'
+import duration from 'dayjs/plugin/duration'
 
-const props = defineProps(['product']);
-const toast = useToast();
+dayjs.extend(duration)
+
+const props = defineProps(['product'])
+
+const toast = useToast()
+const cartStore = useCartStore()
+
 interface ProductImage {
-  id: number;
-  image: string;
-  product: number;
+  id: number
+  image: string
+  product: number
 }
 
 interface Product {
-  id: number;
-  name: string;
-  description: string;
-  mainimage: string;
-  is_active: boolean;
-  quantity: number;
-  price: string;
-  category: number;
-  created_at: string;
-  updated_at: string;
-  images: ProductImage[];
+  id: number
+  name: string
+  description: string
+  mainimage: string
+  is_active: boolean
+  quantity: number
+  price: string
+  category: number
+  created_at: string
+  updated_at: string
+  images: ProductImage[]
+  is_flash_sale_active?: boolean
+  flash_sale_end?: string
+  current_price?: string | number
 }
 
-const cartStore = useCartStore();
+const countdown = ref('')
+let timer: any = null
+
+function updateCountdown() {
+  if (props.product.is_flash_sale_active && props.product.flash_sale_end) {
+    const end = dayjs(props.product.flash_sale_end)
+    const now = dayjs()
+    const diff = end.diff(now)
+
+    if (diff > 0) {
+      const d = dayjs.duration(diff)
+      countdown.value = `${String(d.hours()).padStart(2, '0')}:${String(d.minutes()).padStart(2, '0')}:${String(d.seconds()).padStart(2, '0')}`
+    } else {
+      countdown.value = '00:00:00'
+      clearInterval(timer)
+    }
+  }
+}
+
+onMounted(() => {
+  if (props.product.is_flash_sale_active && props.product.flash_sale_end) {
+    updateCountdown()
+    timer = setInterval(updateCountdown, 1000)
+  }
+})
+
+onBeforeUnmount(() => {
+  clearInterval(timer)
+})
 
 function addToCart(productId: number) {
-  cartStore.addToCart(productId, 1);
+  cartStore.addToCart(productId, 1)
+  toast.success("Đã thêm vào giỏ hàng!")
 }
 
 function formatPrice(price: string | number) {
   return parseFloat(price.toString()).toLocaleString("vi-VN", {
     style: "currency",
     currency: "VND"
-  });
+  })
 }
 </script>

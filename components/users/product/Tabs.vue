@@ -1,4 +1,17 @@
 <template>
+
+  <!-- Flash Sale Section -->
+  <section v-if="flashSaleProducts.length" class="py-10 w-4/5 justify-center mx-auto">
+    <div class="container mx-auto">
+      <div class="text-center mb-6">
+        <h2 class="text-2xl font-bold text-red-600">🔥 Đang giảm giá sốc!</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <ProductCard v-for="product in flashSaleProducts" :key="product.id" :product="product" />
+      </div>
+    </div>
+  </section>
+
   <section class="py-10 w-4/5 justify-center mx-auto border-t">
     <div class="container mx-auto">
       <div class="text-center">
@@ -28,6 +41,8 @@
     </div>
   </section>
 
+
+
   <!-- Recommended Products -->
   <section class="py-10 w-4/5 justify-center mx-auto">
     <div class="container mx-auto">
@@ -44,6 +59,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import ProductCard from '~/components/users/product/Card.vue';
+
 interface ProductImage {
   id: number;
   image: string;
@@ -62,6 +78,8 @@ interface Product {
   created_at: string;
   updated_at: string;
   images: ProductImage[];
+  is_flash_sale_active?: boolean;
+  current_price?: string;
 }
 
 interface Category {
@@ -73,6 +91,7 @@ const activeTab = ref(0);
 const tabName = ref<string[]>([]);
 const tabProduct = ref<Product[]>([]);
 const randProduct = ref<Product[]>([]);
+const flashSaleProducts = ref<Product[]>([]);
 const categories = ref<Category[]>([]);
 
 const fetchCategories = async () => {
@@ -90,7 +109,6 @@ const fetchCategories = async () => {
 const fetchProductsByCategory = async (categoryId: number) => {
   try {
     const data = await useApiFetch<Product[]>(`/catalogue/categories/${categoryId}/products/?limit=3`);
-    console.log(`Products for category ${categoryId}:`, data);
     tabProduct.value = data || [];
   } catch (error) {
     console.error("Error fetching products:", error);
@@ -100,22 +118,26 @@ const fetchProductsByCategory = async (categoryId: number) => {
 
 const fetchRandomProducts = async () => {
   try {
-    // Định nghĩa kiểu dữ liệu khớp với API
-    const data = await useApiFetch<{ results: Product[] }>(
-      "/catalogue/products/random/"
-    );
-
-    if (Array.isArray(data)) {
-      randProduct.value = data;
-    } else {
-      console.error("Unexpected response format:", data);
-      randProduct.value = [];
-    }
-
-    console.log("Random Products:", randProduct.value);
+    const data = await useApiFetch<{ results: Product[] }>("/catalogue/products/random/");
+    randProduct.value = Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error("Error fetching products:", error);
+    console.error("Error fetching random products:", error);
     randProduct.value = [];
+  }
+};
+
+const fetchFlashSaleProducts = async () => {
+  try {
+    const data = await useApiFetch<{ results: Product[] }>("/catalogue/products/flash-sale/");
+    if (data && Array.isArray(data.results)) {
+      flashSaleProducts.value = data.results;
+    } else {
+      flashSaleProducts.value = [];
+      console.error("Unexpected flash sale format:", data);
+    }
+  } catch (error) {
+    console.error("Error fetching flash sale products:", error);
+    flashSaleProducts.value = [];
   }
 };
 
@@ -129,8 +151,9 @@ onMounted(async () => {
   await fetchCategories();
   if (categories.value.length > 0) {
     activeTab.value = 0;
-    fetchProductsByCategory(categories.value[0].id);
-  };
+    await fetchProductsByCategory(categories.value[0].id);
+  }
   await fetchRandomProducts();
+  await fetchFlashSaleProducts();
 });
 </script>
