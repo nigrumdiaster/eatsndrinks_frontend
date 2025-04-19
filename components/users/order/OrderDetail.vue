@@ -22,6 +22,12 @@
         </span>
       </p>
       <p><strong>Thời gian đặt hàng:</strong> {{ formatDate(order.created_at) }}</p>
+      <button 
+        @click="exportInvoice" 
+        class="mt-4 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+      >
+        Xuất hóa đơn
+      </button>
     </div>
 
     <h2 class="text-xl font-semibold mt-6">Sản phẩm trong đơn hàng</h2>
@@ -32,7 +38,6 @@
           <router-link :to="`/product/${item.product}`" class="text-lg font-semibold text-yellow-600 hover:underline">
             {{ item.product_name }}
           </router-link>
-
           <p><strong>Đơn giá:</strong> {{ formatPrice(item.unit_price) }}</p>
           <p><strong>Số lượng:</strong> {{ item.quantity }}</p>
         </div>
@@ -143,6 +148,65 @@ const fetchOrderDetail = async () => {
     console.error("Error fetching order detail:", error);
   }
 };
+
+const exportInvoice = async () => {
+  if (!order.value) return;
+
+  const { jsPDF } = await import('jspdf');
+
+  // Load Roboto font (base64 encoded or from a file)
+  const robotoFontArrayBuffer = await fetch('/fonts/Roboto-Regular.ttf').then(res => res.arrayBuffer());
+  const robotoFontBase64 = arrayBufferToBase64(robotoFontArrayBuffer);
+
+  const doc = new jsPDF();
+
+  // Thêm font vào VFS
+  doc.addFileToVFS('Roboto-Regular.ttf', robotoFontBase64);
+  doc.addFont('Roboto-Regular.ttf', 'Roboto', 'normal');
+  
+  // Sử dụng font 'Roboto' cho toàn bộ tài liệu
+  doc.setFont('Roboto');
+
+  doc.setFontSize(18);
+  doc.text(`Hóa đơn #${order.value.id}`, 20, 20);
+  
+  doc.setFontSize(12);
+  doc.text(`Ngày đặt hàng: ${formatDate(order.value.created_at)}`, 20, 30);
+  doc.text(`Số điện thoại: ${order.value.phone_number}`, 20, 40);
+  doc.text(`Địa chỉ: ${order.value.address}`, 20, 50);
+  doc.text(`Phương thức thanh toán: ${getPaymentMethodText(order.value.payment_method)}`, 20, 60);
+  doc.text(`Trạng thái thanh toán: ${getPaymentStatusText(order.value.payment_status)}`, 20, 70);
+
+  doc.setFontSize(14);
+  doc.text('Chi tiết sản phẩm', 20, 90);
+  
+  let y = 100;
+  order.value.items.forEach((item, index) => {
+    doc.setFontSize(12);
+    doc.text(`${index + 1}. ${item.product_name}`, 20, y);
+    doc.text(`Đơn giá: ${formatPrice(item.unit_price)}`, 20, y + 10);
+    doc.text(`Số lượng: ${item.quantity}`, 100, y + 10);
+    doc.text(`Thành tiền: ${formatPrice(item.total_price)}`, 150, y + 10);
+    y += 30;
+  });
+
+  doc.setFontSize(14);
+  doc.text(`Tổng cộng: ${formatPrice(totalPrice.value)}`, 150, y + 10);
+
+  doc.save(`hoa_don_${order.value.id}.pdf`);
+};
+
+// Convert ArrayBuffer to Base64
+const arrayBufferToBase64 = (buffer: ArrayBuffer): string => {
+  const uint8Array = new Uint8Array(buffer);
+  let binary = '';
+  uint8Array.forEach(byte => {
+    binary += String.fromCharCode(byte);
+  });
+  return window.btoa(binary);
+};
+
+
 
 onMounted(fetchOrderDetail);
 </script>

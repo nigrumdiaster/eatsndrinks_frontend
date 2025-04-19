@@ -143,7 +143,6 @@ onBeforeUnmount(() => {
 
 function addToCart(productId: number) {
   cartStore.addToCart(productId, 1)
-  toast.success("Đã thêm vào giỏ hàng!")
 }
 
 function formatPrice(price: string | number) {

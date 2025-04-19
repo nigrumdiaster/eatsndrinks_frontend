@@ -1,4 +1,3 @@
-
 <template>
   <div class="max-w-4xl mx-auto py-10 px-6 bg-white shadow-lg rounded-lg my-10">
     <h1 class="text-3xl font-bold text-grey-800 mb-6">Đặt hàng</h1>
@@ -6,6 +5,7 @@
     <p v-if="isLoading" class="text-red-500">Đang tải ...</p>
 
     <div class="flex">
+      <!-- Giỏ hàng -->
       <div class="w-1/2 mr-auto">
         <table class="w-full border-4 rounded-lg overflow-hidden bg-white">
           <thead>
@@ -20,7 +20,7 @@
           <tbody>
             <tr v-for="item in cart.items" :key="item.id" class="border-t border-yellow-400">
               <td class="p-2">
-                <img :src="item.product_mainimage" alt="Ảnh sản phẩm" class="w-32 h-32 object-cover rounded-lg">
+                <img :src="item.product_mainimage" alt="Ảnh sản phẩm" class="w-32 h-32 object-cover rounded-lg" />
               </td>
               <td class="p-2">{{ item.product_name }}</td>
               <td class="p-2 text-center">{{ item.quantity }}</td>
@@ -34,6 +34,8 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Thông tin khách hàng -->
       <div class="w-1/2 ml-6 bg-gray-100 p-6 rounded-lg shadow">
         <h2 class="text-2xl font-semibold mb-4">Thông tin khách hàng</h2>
         <div class="mb-4">
@@ -51,32 +53,35 @@
         <div class="mb-4">
           <label class="block text-gray-700 font-medium">Phương thức thanh toán</label>
           <select v-model="paymentMethod" class="w-full p-2 border rounded-lg">
-            <option value="cod">Cod</option>
-            <option value="paypal">Paypal</option>
+            <option value="cod">Thanh toán khi nhận hàng</option>
+            <option value="ppl">Paypal</option>
           </select>
         </div>
-        <button @click="placeOrder" class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-red-600">
+
+        <!-- Nút COD -->
+        <button
+          v-if="paymentMethod === 'cod'"
+          @click="handlePlaceOrder"
+          class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-red-600"
+        >
           Xác nhận đặt hàng
         </button>
+
+        <!-- Nút PayPal -->
+        <div v-if="paymentMethod === 'ppl'" class="mt-4">
+          <div id="paypal-button-container"></div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useCartStore } from "@/stores/cart";
 import { useRouter } from "vue-router";
 import { useApiFetch } from "@/composables/useApi";
 import { useToast } from "vue-toastification";
-
-const cartStore = useCartStore();
-const isLoading = ref(true);
-
-const customerName = ref(""); // Giá trị mặc định
-const phoneNumber = ref("");
-const address = ref("");
-const paymentMethod = ref("cod"); // Mặc định là tiền mặt
 
 interface User {
   first_name: string;
@@ -87,24 +92,35 @@ interface User {
   date_of_birth: string;
 }
 
-const totalPrice = computed(() => {
-  return cart.items.reduce((total, item) => total + item.quantity * item.product_price, 0);
-});
+declare global {
+  interface Window {
+    paypal: any;
+  }
+}
 
+const cartStore = useCartStore();
 const { cart, fetchCart } = cartStore;
 
-
-
-// 🔄 Định dạng giá tiền VNĐ
-function formatPrice(price: string | number) {
-  return parseFloat(price.toString()).toLocaleString("vi-VN", {
-    style: "currency",
-    currency: "VND"
-  });
-}
+const isLoading = ref(true);
+const customerName = ref("");
+const phoneNumber = ref("");
+const address = ref("");
+const paymentMethod = ref("cod");
 
 const user = ref<User | null>(null);
 const router = useRouter();
+const toast = useToast();
+
+const totalPrice = computed(() =>
+  cart.items.reduce((total, item) => total + item.quantity * item.product_price, 0)
+);
+
+function formatPrice(price: string | number) {
+  return parseFloat(price.toString()).toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+}
 
 const fetchUser = async () => {
   try {
@@ -122,54 +138,104 @@ const fetchUser = async () => {
   }
 };
 
+// Nút thanh toán Paypal
+const loadPayPalScript = async () => {
+  if (document.getElementById("paypal-sdk")) return;
 
+  const script = document.createElement("script");
+  script.id = "paypal-sdk";
+  script.src =
+    "https://www.paypal.com/sdk/js?client-id=AdoLODJw_mau1WFs7PGB9wwGUYsGBvIDEbcLQTvon_r_3LWwk5kHxRPGEhcdzVxKKDQDmuwCpy8UVag8&currency=USD";
+  script.onload = renderPayPalButton;
+  document.body.appendChild(script);
+};
 
-const toast = useToast();
+const renderPayPalButton = () => {
+  if (!window.paypal) return;
 
-const placeOrder = async () => {
+  window.paypal
+    .Buttons({
+      createOrder: function (data: any, actions: any) {
+        return actions.order.create({
+          purchase_units: [
+            {
+              amount: {
+                value: (totalPrice.value / 24000).toFixed(2), // Chuyển VND sang USD (giả sử 1 USD = 24,000 VND)
+              },
+            },
+          ],
+        });
+      },
+      onApprove: function (data: any, actions: any) {
+        return actions.order.capture().then(function (details: any) {
+          console.log("✅ Thanh toán thành công:", details);
+          toast.success(`Cảm ơn ${details.payer.name.given_name}, thanh toán thành công!`);
+          placeOrder(true); // Đặt hàng, đánh dấu là đã thanh toán
+        });
+      },
+      onError: function (err: any) {
+        console.error("❌ Lỗi thanh toán:", err);
+        toast.error("Lỗi khi thanh toán với PayPal.");
+      },
+    })
+    .render("#paypal-button-container");
+};
+
+// Tự động tải PayPal SDK khi chọn phương thức
+watch(paymentMethod, (newMethod) => {
+  if (newMethod === "ppl") {
+    loadPayPalScript();
+  }
+});
+
+// Nút bấm xác nhận
+const handlePlaceOrder = () => {
+  placeOrder(); // Với COD
+};
+
+// Đặt hàng
+const placeOrder = async (isPaid = false) => {
+  if (!phoneNumber.value || !address.value) {
+    toast.error("⚠️ Vui lòng nhập đầy đủ số điện thoại và địa chỉ trước khi đặt hàng.");
+    return;
+  }
+
   try {
-    const orderData = {
+    const orderData: Record<string, any> = {
       phone_number: phoneNumber.value,
       address: address.value,
       payment_method: paymentMethod.value,
     };
 
-    console.log("🛠 Dữ liệu gửi đi:", JSON.stringify(orderData, null, 2));
+    if (isPaid) {
+      orderData.payment_status = "paid";
+    }
 
     const response = await useApiFetch("/order/create", {
       method: "POST",
       body: JSON.stringify(orderData),
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
 
-    console.log("✅ Đặt hàng thành công", response);
-
-    // Hiển thị toast thành công
     toast.success("🎉 Đơn hàng đã được tạo thành công!");
-
-    // Chuyển hướng về trang Home sau khi đặt hàng thành công
-    setTimeout(() => {
-      router.push("/user/orders");
-    }, 1000); // Chờ 2 giây để người dùng kịp nhìn thấy thông báo
+    setTimeout(() => router.push("/user/orders"), 1000);
   } catch (error: any) {
     console.error("❌ Lỗi khi đặt hàng:", error);
-
     let errorMessage = "Đã xảy ra lỗi, vui lòng thử lại!";
-    
+
     if (error.response) {
       try {
-        const errorData = await error.response.json(); // Chờ lấy dữ liệu lỗi từ API
-        console.error("📢 Phản hồi API:", errorData);
-        errorMessage = errorData.message || errorMessage; // Lấy lỗi từ API nếu có
+        const errorData = await error.response.json();
+        errorMessage = errorData.message || errorMessage;
       } catch (parseError) {
         console.error("❌ Lỗi khi đọc phản hồi API:", parseError);
       }
     }
 
-    // Hiển thị toast lỗi
     toast.error(`⚠️ ${errorMessage}`);
   }
 };
+
 
 onMounted(async () => {
   isLoading.value = true;
