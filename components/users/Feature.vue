@@ -17,33 +17,35 @@
 
       <!-- Card Section -->
       <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        <!-- Easy Ordering -->
+        <!-- Đặt hàng dễ dàng -->
         <div class="bg-white shadow-md rounded-lg p-6 text-center">
           <div class="flex justify-center items-center w-16 h-16 bg-yellow-500 text-white rounded-full mx-auto mb-4">
-            <img src="/icons/phone.svg" alt="phone icon" class="w-10 h-10" />
+            <img src="/icons/phone.svg" alt="biểu tượng điện thoại" class="w-10 h-10" />
           </div>
-          <h3 class="text-lg font-semibold">Easy Ordering</h3>
-          <p class="text-gray-600">Even without website access, you can place your order with a simple phone call.</p>
+          <h3 class="text-lg font-semibold">Đặt hàng dễ dàng</h3>
+          <p class="text-gray-600">Ngay cả khi không truy cập được website, bạn vẫn có thể đặt hàng qua một cuộc gọi đơn
+            giản.</p>
         </div>
 
-        <!-- Fast Preparation -->
+        <!-- Chuẩn bị nhanh chóng -->
         <div class="bg-white shadow-md rounded-lg p-6 text-center">
           <div class="flex justify-center items-center w-16 h-16 bg-yellow-500 text-white rounded-full mx-auto mb-4">
-            <img src="/icons/time.svg" alt="phone icon" class="w-10 h-10" />
+            <img src="/icons/time.svg" alt="biểu tượng đồng hồ" class="w-10 h-10" />
           </div>
-          <h3 class="text-lg font-semibold">Quick Preparation</h3>
-          <p class="text-gray-600">All orders are prepared in less than 30 minutes.</p>
+          <h3 class="text-lg font-semibold">Chuẩn bị nhanh chóng</h3>
+          <p class="text-gray-600">Tất cả đơn hàng được chuẩn bị trong vòng chưa đến 30 phút.</p>
         </div>
 
-        <!-- Free Delivery -->
+        <!-- Giao hàng miễn phí -->
         <div class="bg-white shadow-md rounded-lg p-6 text-center">
           <div class="flex justify-center items-center w-16 h-16 bg-yellow-500 text-white rounded-full mx-auto mb-4">
-            <img src="/icons/marker.svg" alt="phone icon" class="w-10 h-10" />
+            <img src="/icons/marker.svg" alt="biểu tượng vị trí" class="w-10 h-10" />
           </div>
-          <h3 class="text-lg font-semibold">Delivery to Your Address</h3>
-          <p class="text-gray-600">Delivery is completely free! :)</p>
+          <h3 class="text-lg font-semibold">Giao hàng tận nơi</h3>
+          <p class="text-gray-600">Giao hàng hoàn toàn miễn phí! :)</p>
         </div>
       </div>
+
     </div>
   </section>
 </template>

@@ -75,9 +75,9 @@ const isMenuOpen = ref(false);
 
 // Navigation Menu Items
 const menuItems = [
-  { label: "Home", path: "/" },
-  { label: "Menu", path: "/menu" },
-  { label: "About Us", path: "/about" },
+  { label: "Trang chủ", path: "/" },
+  { label: "Thực đơn", path: "/menu" },
+  { label: "Về chúng tôi", path: "/about" },
   { label: "Contact Us", path: "/" }
 ];
 

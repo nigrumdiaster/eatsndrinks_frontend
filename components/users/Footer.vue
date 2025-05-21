@@ -7,7 +7,7 @@
           <div>
             <h3 class="text-2xl font-bold text-yellow-500">EATSNDRINKS</h3>
             <p class="mt-2 text-gray-300">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora mollitia, hic provident, numquam ducimus, in at quo accusamus nihil unde voluptates. Ipsa magnam blanditiis voluptatibus voluptates delectus odio aspernatur vitae.
+              Chúng tôi là Eats & Drinks, nơi mang đến cho bạn những món ăn ngon, chất lượng và dịch vụ tận tâm mỗi ngày. Với nguyên liệu tươi sạch, chế biến kỹ lưỡng và thực đơn phong phú, chúng tôi cam kết mang lại trải nghiệm ẩm thực tuyệt vời cho mọi khách hàng.
             </p>
           </div>
   
