@@ -45,6 +45,7 @@
                   class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 border border-gray-200 z-50">
                   <NuxtLink to="/profile" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Hồ sơ</NuxtLink>
                   <NuxtLink to="/user/orders" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Lịch sử mua hàng</NuxtLink>
+                  <NuxtLink to="/changepassword" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Thay đổi mật khẩu</NuxtLink>
                   <hr />
                   <button @click="logout"
                     class="block w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100">

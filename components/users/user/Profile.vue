@@ -33,15 +33,18 @@
         <p class="border rounded-lg px-4 py-2">{{ user.address ?? "Chưa cập nhật" }}</p>
       </div>
 
-      <div>
-        <label class="font-semibold text-gray-700">Ngày sinh</label>
-        <p class="border rounded-lg px-4 py-2">{{ user.date_of_birth ?? "Chưa cập nhật" }}</p>
+      <div class="mt-4 flex justify-between">
+        <button @click="update"
+          class="bg-yellow-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">
+          Chỉnh Sửa
+        </button>
+
+        <button @click="logout"
+          class="bg-red-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">
+          Đăng Xuất
+        </button>
       </div>
 
-      <button @click="logout"
-        class="mt-4 bg-red-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">
-        Đăng Xuất
-      </button>
     </div>
 
     <p v-else class="text-gray-500">Vui lòng đăng nhập để xem thông tin cá nhân.</p>
@@ -64,6 +67,11 @@ const user = computed(() => authStore.user);
 const logout = () => {
   authStore.logout();
   router.push('/login'); // Chuyển hướng về trang đăng nhập
+};
+
+// Hàm chỉnh sửa thông tin
+const update = () => {
+  router.push('/update'); // Chuyển hướng sang trang chỉnh sửa thông tin
 };
 </script>
 
