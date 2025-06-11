@@ -3,9 +3,11 @@ import { useCookie, useRuntimeConfig } from "#app";
 
 interface User {
   id: number;
-  name: string;
-  email: string;
-  avatar?: string;
+  username: string;
+  first_name: string;
+  last_name: string;
+  fullname: string;
+  is_active: boolean | string;
 }
 
 export const useAuthStore = defineStore("auth", () => {
