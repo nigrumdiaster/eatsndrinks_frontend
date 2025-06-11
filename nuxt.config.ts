@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE_URL || 'http://127.0.0.1:8000', // Mặc định nếu chưa có ENV
+      hereApiKey: process.env.HERE_MAPS_API_KEY,
     },
   },
   modules: ["@pinia/nuxt", "@nuxtjs/leaflet"],

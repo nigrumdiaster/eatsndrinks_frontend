@@ -79,7 +79,7 @@ const menuItems = [
   { label: "Trang chủ", path: "/" },
   { label: "Thực đơn", path: "/menu" },
   { label: "Về chúng tôi", path: "/about" },
-  { label: "Contact Us", path: "/" }
+  { label: "Nhà hàng", path: "/restaurant" }
 ];
 
 // Access Auth Store
