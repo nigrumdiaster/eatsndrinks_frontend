@@ -14,6 +14,11 @@ export default <RouterConfig>{
             component: () => import('~/pages/users/About.vue'),
         },
         {
+            name: 'restaurant',
+            path: '/restaurant',
+            component: () => import('~/pages/users/Map.vue'),
+        },
+        {
             name: 'menu',
             path: '/menu',
             component: () => import('~/pages/users/Menu.vue'),
