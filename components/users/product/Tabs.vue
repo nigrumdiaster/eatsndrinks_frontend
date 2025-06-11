@@ -6,7 +6,7 @@
       <div class="text-center mb-6">
         <h2 class="text-2xl font-bold text-red-600">🔥 Đang giảm giá sốc!</h2>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <ProductCard v-for="product in flashSaleProducts" :key="product.id" :product="product" />
       </div>
     </div>

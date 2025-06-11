@@ -160,11 +160,8 @@
   }
   
   function addToCart(product: Product, quantity: number) {
-    if (product.quantity >= quantity) {
       cartStore.addToCart(product.id, quantity)
-    } else {
-      toast.error("Số lượng sản phẩm không đủ")
-    }
+
   }
   
   const fetchProductData = async () => {
