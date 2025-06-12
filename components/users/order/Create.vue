@@ -1,75 +1,79 @@
 <template>
-  <div class="max-w-4xl mx-auto py-10 px-6 bg-white shadow-lg rounded-lg my-10">
-    <h1 class="text-3xl font-bold text-grey-800 mb-6">Đặt hàng</h1>
+  <div class="max-w-4xl mx-auto py-6 sm:py-10 px-4 sm:px-6 bg-white shadow-lg rounded-lg my-6 sm:my-10">
+    <h1 class="text-2xl sm:text-3xl font-bold text-grey-800 mb-6">Đặt hàng</h1>
 
     <p v-if="isLoading" class="text-red-500">Đang tải ...</p>
 
-    <div class="flex">
+    <div class="flex flex-col lg:flex-row gap-6">
       <!-- Giỏ hàng -->
-      <div class="w-1/2 mr-auto">
-        <table class="w-full border-4 rounded-lg overflow-hidden bg-white">
-          <thead>
-            <tr class="bg-yellow-200 border-b-4 border-yellow-400">
-              <th class="text-left p-2 pl-4">Ảnh Sản phẩm</th>
-              <th class="text-left p-2">Sản phẩm</th>
-              <th class="text-center p-2">Số lượng</th>
-              <th class="text-left p-2">Giá tiền</th>
-              <th class="text-left p-2">Thành tiền</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="item in cart.items" :key="item.id" class="border-t border-yellow-400">
-              <td class="p-2">
-                <img :src="item.product_mainimage" alt="Ảnh sản phẩm" class="w-32 h-32 object-cover rounded-lg" />
-              </td>
-              <td class="p-2">{{ item.product_name }}</td>
-              <td class="p-2 text-center">{{ item.quantity }}</td>
-              <td class="p-2">{{ formatPrice(item.product_price) }}</td>
-              <td class="p-2">{{ formatPrice(item.quantity * item.product_price) }}</td>
-            </tr>
-            <tr class="border-t-4 border-yellow-400 font-semibold bg-yellow-100">
-              <td colspan="4" class="text-center p-2">Tổng tiền:</td>
-              <td class="p-2">{{ formatPrice(totalPrice) }}</td>
-            </tr>
-          </tbody>
-        </table>
+      <div class="w-full lg:w-1/2">
+        <div class="overflow-x-auto">
+          <table class="w-full border-4 rounded-lg overflow-hidden bg-white">
+            <thead>
+              <tr class="bg-yellow-200 border-b-4 border-yellow-400">
+                <th class="text-left p-2">Ảnh</th>
+                <th class="text-left p-2">Sản phẩm</th>
+                <th class="text-center p-2">SL</th>
+                <th class="text-right p-2">Giá</th>
+                <th class="text-right p-2">Tổng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="item in cart.items" :key="item.id" class="border-t border-yellow-400">
+                <td class="p-2">
+                  <img :src="item.product_mainimage" alt="Ảnh sản phẩm" class="w-16 h-16 sm:w-24 sm:h-24 object-cover rounded-lg" />
+                </td>
+                <td class="p-2 text-sm sm:text-base">{{ item.product_name }}</td>
+                <td class="p-2 text-center">{{ item.quantity }}</td>
+                <td class="p-2 text-right text-sm sm:text-base">{{ formatPrice(item.product_price) }}</td>
+                <td class="p-2 text-right text-sm sm:text-base">{{ formatPrice(item.quantity * item.product_price) }}</td>
+              </tr>
+              <tr class="border-t-4 border-yellow-400 font-semibold bg-yellow-100">
+                <td colspan="4" class="text-right p-2">Tổng tiền:</td>
+                <td class="p-2 text-right">{{ formatPrice(totalPrice) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Thông tin khách hàng -->
-      <div class="w-1/2 ml-6 bg-gray-100 p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-semibold mb-4">Thông tin khách hàng</h2>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium">Tên khách hàng</label>
-          <input v-model="customerName" type="text" class="w-full p-2 border rounded-lg" />
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium">Số điện thoại</label>
-          <input v-model="phoneNumber" type="tel" class="w-full p-2 border rounded-lg" />
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium">Địa chỉ</label>
-          <input v-model="address" type="text" class="w-full p-2 border rounded-lg" />
-        </div>
-        <div class="mb-4">
-          <label class="block text-gray-700 font-medium">Phương thức thanh toán</label>
-          <select v-model="paymentMethod" class="w-full p-2 border rounded-lg">
-            <option value="cod">Thanh toán khi nhận hàng</option>
-            <option value="ppl">Paypal</option>
-          </select>
-        </div>
+      <div class="w-full lg:w-1/2 bg-gray-100 p-4 sm:p-6 rounded-lg shadow">
+        <h2 class="text-xl sm:text-2xl font-semibold mb-4">Thông tin khách hàng</h2>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Tên khách hàng</label>
+            <input v-model="customerName" type="text" class="w-full p-2 border rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Số điện thoại</label>
+            <input v-model="phoneNumber" type="tel" class="w-full p-2 border rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Địa chỉ</label>
+            <input v-model="address" type="text" class="w-full p-2 border rounded-lg" />
+          </div>
+          <div>
+            <label class="block text-gray-700 font-medium mb-1">Phương thức thanh toán</label>
+            <select v-model="paymentMethod" class="w-full p-2 border rounded-lg">
+              <option value="cod">Thanh toán khi nhận hàng</option>
+              <option value="ppl">Paypal</option>
+            </select>
+          </div>
 
-        <!-- Nút COD -->
-        <button
-          v-if="paymentMethod === 'cod'"
-          @click="handlePlaceOrder"
-          class="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-red-600"
-        >
-          Xác nhận đặt hàng
-        </button>
+          <!-- Nút COD -->
+          <button
+            v-if="paymentMethod === 'cod'"
+            @click="handlePlaceOrder"
+            class="w-full bg-blue-500 text-white p-3 rounded-lg hover:bg-red-600 transition-colors"
+          >
+            Xác nhận đặt hàng
+          </button>
 
-        <!-- Nút PayPal -->
-        <div v-if="paymentMethod === 'ppl'" class="mt-4">
-          <div id="paypal-button-container"></div>
+          <!-- Nút PayPal -->
+          <div v-if="paymentMethod === 'ppl'" class="mt-4">
+            <div id="paypal-button-container"></div>
+          </div>
         </div>
       </div>
     </div>

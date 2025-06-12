@@ -1,12 +1,14 @@
 <template>
-  <div class="max-w-4xl mx-auto py-10 px-6 bg-white shadow-lg rounded-lg my-10">
-    <h1 class="text-3xl font-bold text-grey-800 mb-6">Đặt hàng</h1>
+  <div class="max-w-4xl mx-auto py-10 px-4 sm:px-6 bg-white shadow-lg rounded-lg my-10">
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-6">Đặt hàng</h1>
 
     <p v-if="isLoading" class="text-red-500">Đang tải ...</p>
 
-    <div class="flex">
-      <!-- 🛒 Bảng giỏ hàng (Bên trái) -->
-      <div class="w-1/2 mr-auto">
+    <!-- Flex container for cart and form -->
+    <div class="flex flex-col md:flex-row gap-6">
+      <!-- 🛒 Cart Table (Left Column) -->
+      <div class="w-full md:w-1/2">
+        <div class="overflow-x-auto">
           <table class="w-full border-4 rounded-lg overflow-hidden bg-white">
             <thead>
               <tr class="bg-yellow-200 border-b-4 border-yellow-400">
@@ -19,7 +21,7 @@
             <tbody>
               <tr v-for="item in cart.items" :key="item.id" class="border-t border-yellow-400">
                 <td class="p-2">
-                  <img :src="item.product_mainimage" alt="Ảnh sản phẩm" class="w-32 h-32 object-cover rounded-lg">
+                  <img :src="item.product_mainimage" alt="Ảnh sản phẩm" class="w-24 h-24 sm:w-32 sm:h-32 object-cover rounded-lg">
                 </td>
                 <td class="p-2">{{ item.product_name }}</td>
                 <td class="p-2 text-center">{{ item.quantity }}</td>
@@ -30,12 +32,13 @@
                 <td class="p-2">{{ formatPrice(totalPrice) }}</td>
               </tr>
             </tbody>
-          </table>       
+          </table>
+        </div>
       </div>
 
-      <!-- 📝 Form nhập thông tin khách hàng (Bên phải) -->
-      <div class="w-1/2 ml-6 bg-gray-100 p-6 rounded-lg shadow">
-        <h2 class="text-2xl font-semibold mb-4">Thông tin khách hàng</h2>
+      <!-- 📝 Customer Information Form (Right Column) -->
+      <div class="w-full md:w-1/2 bg-gray-100 p-4 sm:p-6 rounded-lg shadow">
+        <h2 class="text-xl sm:text-2xl font-semibold mb-4">Thông tin khách hàng</h2>
 
         <div class="mb-4">
           <label class="block text-gray-700 font-medium">Tên khách hàng</label>
@@ -68,11 +71,10 @@
   </div>
 </template>
 
-
-
 <script lang="ts" setup>
 import { ref, onMounted, computed } from "vue";
 import { useCartStore } from "@/stores/cart";
+import { useRouter } from "vue-router";
 
 const cartStore = useCartStore();
 const isLoading = ref(true);
@@ -81,7 +83,6 @@ const customerName = ref(""); // Giá trị mặc định
 const phoneNumber = ref("");
 const address = ref("");
 const paymentMethod = ref("cash"); // Mặc định là tiền mặt
-
 
 interface User {
   first_name: string;
@@ -92,13 +93,11 @@ interface User {
   date_of_birth: string;
 }
 
-
 const totalPrice = computed(() => {
   return cart.items.reduce((total, item) => total + item.quantity * item.product_price, 0);
 });
 
 const { cart, fetchCart } = cartStore;
-
 
 onMounted(async () => {
   isLoading.value = true;
@@ -114,7 +113,6 @@ function formatPrice(price: string | number) {
     currency: "VND"
   });
 }
-
 
 // Khai báo biến lưu thông tin người dùng
 const user = ref<User | null>(null);
@@ -136,5 +134,16 @@ const fetchUser = async () => {
     router.push("/404");
   }
 };
-
 </script>
+
+<style scoped>
+/* Ensure table is scrollable on small screens */
+@media (max-width: 640px) {
+  .overflow-x-auto {
+    overflow-x: auto;
+  }
+  table {
+    min-width: 100%;
+  }
+}
+</style>
