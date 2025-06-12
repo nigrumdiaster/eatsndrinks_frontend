@@ -59,24 +59,29 @@ export default <RouterConfig>{
             component: () => import('~/pages/users/order/Order.vue'),
         },
         {
-            name: 'user_orders',
+            name: 'user-orders',
             path: '/user/orders',
             component: () => import('~/pages/users/order/ListOrders.vue'),
         },
         {
-            name: 'profile_update',
+            name: 'profile-update',
             path: '/update',
             component: () => import('~/pages/users/user/Update.vue'),
         },
         {
-            name: 'change_password',
+            name: 'change-password',
             path: '/changepassword',
             component: () => import('~/pages/users/user/Change.vue'),
         },
         {
-            name: 'user_orders_id',
+            name: 'user-orders-id',
             path: '/user/orders/:id',
             component: () => import('~/pages/users/order/[id].vue'),
+        },
+        {
+            name: 'address',
+            path: '/address',
+            component: () => import('~/pages/users/user/AddressBook.vue'),
         },
     ]
 };
