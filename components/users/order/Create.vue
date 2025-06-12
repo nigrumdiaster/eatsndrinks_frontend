@@ -45,14 +45,94 @@
             <label class="block text-gray-700 font-medium mb-1">Tên khách hàng</label>
             <input v-model="customerName" type="text" class="w-full p-2 border rounded-lg" />
           </div>
+
+          <!-- Địa chỉ từ sổ địa chỉ -->
           <div>
-            <label class="block text-gray-700 font-medium mb-1">Số điện thoại</label>
-            <input v-model="phoneNumber" type="tel" class="w-full p-2 border rounded-lg" />
+            <div class="flex justify-between items-center mb-2">
+              <label class="block text-gray-700 font-medium">Chọn địa chỉ giao hàng</label>
+              <button 
+                type="button"
+                @click="openAddressBook"
+                class="text-sm text-blue-600 hover:text-blue-800"
+              >
+                + Thêm địa chỉ mới
+              </button>
+            </div>
+
+            <!-- Thanh tìm kiếm -->
+            <div class="mb-3">
+              <input
+                v-model="addressSearch"
+                type="text"
+                placeholder="Tìm kiếm địa chỉ..."
+                class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+              />
+            </div>
+
+            <div v-if="savedAddresses.length > 0" class="max-h-60 overflow-y-auto space-y-2">
+              <div 
+                v-for="addr in filteredAddresses" 
+                :key="addr.id"
+                @click="selectAddress(addr)"
+                class="p-3 border rounded-lg cursor-pointer transition-colors"
+                :class="selectedAddressId === addr.id ? 'bg-yellow-50 border-yellow-500' : 'hover:bg-gray-50'"
+              >
+                <div class="flex items-start justify-between">
+                  <div>
+                    <p class="font-medium">{{ addr.phone_number }}</p>
+                    <p class="text-gray-600 text-sm">{{ addr.address }}</p>
+                  </div>
+                  <span v-if="addr.is_default" class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                    Mặc định
+                  </span>
+                </div>
+              </div>
+
+              <!-- Phân trang -->
+              <div v-if="totalPages > 1" class="flex justify-center items-center space-x-2 pt-3 border-t">
+                <button 
+                  @click="currentPage--" 
+                  :disabled="currentPage === 1"
+                  class="px-3 py-1 rounded border"
+                  :class="currentPage === 1 ? 'bg-gray-100 text-gray-400' : 'hover:bg-gray-50'"
+                >
+                  &lt;
+                </button>
+                <span class="text-sm text-gray-600">
+                  Trang {{ currentPage }}/{{ totalPages }}
+                </span>
+                <button 
+                  @click="currentPage++" 
+                  :disabled="currentPage === totalPages"
+                  class="px-3 py-1 rounded border"
+                  :class="currentPage === totalPages ? 'bg-gray-100 text-gray-400' : 'hover:bg-gray-50'"
+                >
+                  &gt;
+                </button>
+              </div>
+            </div>
+            <div v-else class="text-center py-4 text-gray-500">
+              Chưa có địa chỉ nào được lưu
+            </div>
           </div>
-          <div>
-            <label class="block text-gray-700 font-medium mb-1">Địa chỉ</label>
-            <input v-model="address" type="text" class="w-full p-2 border rounded-lg" />
+
+          <!-- Hoặc nhập địa chỉ mới -->
+          <div v-if="!selectedAddressId">
+            <div class="border-t my-4 pt-4">
+              <p class="text-sm text-gray-500 mb-4">Hoặc nhập địa chỉ mới:</p>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-gray-700 font-medium mb-1">Số điện thoại</label>
+                  <input v-model="phoneNumber" type="tel" class="w-full p-2 border rounded-lg" />
+                </div>
+                <div>
+                  <label class="block text-gray-700 font-medium mb-1">Địa chỉ</label>
+                  <input v-model="address" type="text" class="w-full p-2 border rounded-lg" />
+                </div>
+              </div>
+            </div>
           </div>
+
           <div>
             <label class="block text-gray-700 font-medium mb-1">Phương thức thanh toán</label>
             <select v-model="paymentMethod" class="w-full p-2 border rounded-lg">
@@ -77,15 +157,41 @@
         </div>
       </div>
     </div>
+
+    <!-- Modal chọn địa chỉ -->
+    <div v-if="showAddressModal" 
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      @click.self="closeAddressModal"
+    >
+      <div class="bg-white rounded-lg p-6 w-full max-w-2xl relative">
+        <div class="flex justify-between items-center mb-4">
+          <button 
+            @click="closeAddressModal" 
+            class="absolute top-4 right-4 text-gray-500 hover:text-gray-700 p-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+        <AddressBook 
+          @address-selected="onAddressSelected"
+          @address-added="refreshAddresses"
+          @address-updated="refreshAddresses"
+          @address-deleted="refreshAddresses"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed, watch, onUnmounted } from "vue";
 import { useCartStore } from "@/stores/cart";
 import { useRouter } from "vue-router";
 import { useApiFetch } from "@/composables/useApi";
 import { useToast } from "vue-toastification";
+import AddressBook from '~/components/users/user/AddressBook.vue';
 
 interface User {
   first_name: string;
@@ -94,6 +200,14 @@ interface User {
   phone_number: string;
   address: string;
   date_of_birth: string;
+}
+
+interface Address {
+  id: number;
+  user: number;
+  phone_number: string;
+  address: string;
+  is_default: boolean;
 }
 
 declare global {
@@ -110,14 +224,67 @@ const customerName = ref("");
 const phoneNumber = ref("");
 const address = ref("");
 const paymentMethod = ref("cod");
+const showAddressModal = ref(false);
+const savedAddresses = ref<Address[]>([]);
+const selectedAddressId = ref<number | null>(null);
 
 const user = ref<User | null>(null);
 const router = useRouter();
 const toast = useToast();
+const config = useRuntimeConfig();
 
 const totalPrice = computed(() =>
   cart.items.reduce((total, item) => total + item.quantity * item.product_price, 0)
 );
+
+// Thêm các biến cho tìm kiếm và phân trang
+const addressSearch = ref("");
+const currentPage = ref(1);
+const itemsPerPage = 5;
+
+// Lọc địa chỉ theo từ khóa tìm kiếm
+const filteredAddresses = computed(() => {
+  const search = addressSearch.value.toLowerCase().trim();
+  let filtered = savedAddresses.value;
+  
+  if (search) {
+    filtered = savedAddresses.value.filter(addr => 
+      addr.address.toLowerCase().includes(search) || 
+      addr.phone_number.includes(search)
+    );
+  }
+
+  // Sắp xếp để địa chỉ mặc định lên đầu
+  filtered = [...filtered].sort((a, b) => {
+    if (a.is_default === b.is_default) return 0;
+    return a.is_default ? -1 : 1;
+  });
+
+  // Phân trang
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filtered.slice(start, end);
+});
+
+// Tính tổng số trang
+const totalPages = computed(() => {
+  const search = addressSearch.value.toLowerCase().trim();
+  let filtered = savedAddresses.value;
+  
+  if (search) {
+    filtered = savedAddresses.value.filter(addr => 
+      addr.address.toLowerCase().includes(search) || 
+      addr.phone_number.includes(search)
+    );
+  }
+
+  return Math.ceil(filtered.length / itemsPerPage);
+});
+
+// Reset trang về 1 khi tìm kiếm
+watch(addressSearch, () => {
+  currentPage.value = 1;
+});
 
 function formatPrice(price: string | number) {
   return parseFloat(price.toString()).toLocaleString("vi-VN", {
@@ -126,6 +293,47 @@ function formatPrice(price: string | number) {
   });
 }
 
+const fetchAddresses = async () => {
+  try {
+    const token = useCookie("access_token");
+    const response = await fetch(`${config.public.apiBase}/users/address-book/`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    const data = await response.json();
+    savedAddresses.value = data;
+
+    // Tự động chọn địa chỉ mặc định nếu có
+    const defaultAddress = data.find((addr: Address) => addr.is_default);
+    if (defaultAddress) {
+      selectAddress(defaultAddress);
+    }
+  } catch (error) {
+    console.error('Error fetching addresses:', error);
+    toast.error('Không thể tải danh sách địa chỉ');
+  }
+};
+
+const selectAddress = (addr: Address) => {
+  selectedAddressId.value = addr.id;
+  phoneNumber.value = addr.phone_number;
+  address.value = addr.address;
+};
+
+const openAddressBook = () => {
+  showAddressModal.value = true;
+};
+
+const closeAddressModal = () => {
+  showAddressModal.value = false;
+};
+
+const onAddressSelected = (addr: Address) => {
+  selectAddress(addr);
+  closeAddressModal();
+};
+
 const fetchUser = async () => {
   try {
     const data = await useApiFetch<User>("/users/user/profile/");
@@ -133,8 +341,6 @@ const fetchUser = async () => {
 
     if (data) {
       customerName.value = `${data.first_name} ${data.last_name}`;
-      phoneNumber.value = data.phone_number;
-      address.value = data.address;
     }
   } catch (error) {
     console.error("Lỗi khi lấy thông tin người dùng:", error);
@@ -240,11 +446,55 @@ const placeOrder = async (isPaid = false) => {
   }
 };
 
+const refreshAddresses = async () => {
+  try {
+    const token = useCookie("access_token");
+    const response = await fetch(`${config.public.apiBase}/users/address-book/`, {
+      headers: {
+        Authorization: `Bearer ${token.value}`,
+      },
+    });
+    const data = await response.json();
+    savedAddresses.value = data;
+
+    // Nếu địa chỉ đang chọn bị xóa, reset form
+    if (selectedAddressId.value && !data.find((addr: Address) => addr.id === selectedAddressId.value)) {
+      selectedAddressId.value = null;
+      phoneNumber.value = "";
+      address.value = "";
+    }
+
+    // Tự động chọn địa chỉ mặc định nếu chưa có địa chỉ nào được chọn
+    if (!selectedAddressId.value) {
+      const defaultAddress = data.find((addr: Address) => addr.is_default);
+      if (defaultAddress) {
+        selectAddress(defaultAddress);
+      }
+    }
+  } catch (error) {
+    console.error('Error refreshing addresses:', error);
+    toast.error('Không thể cập nhật danh sách địa chỉ');
+  }
+};
 
 onMounted(async () => {
   isLoading.value = true;
-  await fetchCart();
-  await fetchUser();
+  await Promise.all([fetchCart(), fetchUser(), fetchAddresses()]);
   isLoading.value = false;
+
+  // Thêm event listener cho phím Escape
+  document.addEventListener('keydown', handleEscapeKey);
 });
+
+// Cleanup event listener khi component bị hủy
+onUnmounted(() => {
+  document.removeEventListener('keydown', handleEscapeKey);
+});
+
+// Xử lý phím Escape
+const handleEscapeKey = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && showAddressModal.value) {
+    closeAddressModal();
+  }
+};
 </script>
