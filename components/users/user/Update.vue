@@ -46,7 +46,7 @@
         </button>
 
         <button type="button" @click="cancel"
-          class="bg-yellow-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">
+          class="bg-red-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">
           Hủy
         </button>
       </div>
@@ -118,9 +118,9 @@ const submitForm = async () => {
     });
 
     toast.success('Cập nhật thông tin thành công!');
-    setTimeout(() => {
-      navigateTo('/profile').then(() => {
-      window.location.reload();})
+    setTimeout(async () => {
+      await navigateTo('/profile');
+      window.location.reload();
     }, 300);
   } catch (error) {
     console.error('Lỗi khi cập nhật thông tin:', error);

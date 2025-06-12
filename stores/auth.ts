@@ -8,6 +8,8 @@ interface User {
   last_name: string;
   fullname: string;
   is_active: boolean | string;
+  phone_number: string | null;
+  address: string | null;
 }
 
 export const useAuthStore = defineStore("auth", () => {

@@ -28,7 +28,7 @@
         </button>
 
         <button type="button" @click="cancel"
-          class="bg-yellow-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">
+          class="bg-red-500 text-white px-4 py-2 rounded-md transition-all duration-200 hover:bg-gray-800">
           Hủy
         </button>
       </div>
