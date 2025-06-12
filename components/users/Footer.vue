@@ -40,7 +40,7 @@
 
         <!-- Contact Information -->
           <div>
-            <h3 class="text-xl font-semibold text-yellow-500">Contact Us</h3>
+            <h3 class="text-xl font-semibold text-yellow-500">Liên hệ</h3>
             <ul class="mt-2 space-y-2 text-gray-300">
                 <li class="flex items-center space-x-2">
                     <img src="public\icons\marker.svg" alt="Contact Icon" class="w-5 h-5">

@@ -2,7 +2,7 @@
   <section class="bg-gray-100 py-16">
     <div class="container mx-auto px-6 lg:px-20">
       <div class="text-center mb-10">
-        <h2 class="text-3xl font-bold text-gray-900">Contact Us</h2>
+        <h2 class="text-3xl font-bold text-gray-900">Liên hệ với chúng tôi</h2>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -18,7 +18,7 @@
             <div class="mb-4">
               <input type="text" v-model="formdata.name"
                 class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                placeholder="Full Name" />
+                placeholder="Họ và tên" />
             </div>
             <div class="mb-4">
               <input type="email" v-model="formdata.email"
@@ -28,17 +28,17 @@
             <div class="mb-4">
               <input type="text" v-model="formdata.subject"
                 class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                placeholder="Subject" />
+                placeholder="Chủ đề" />
             </div>
             <div class="mb-4">
               <textarea v-model="formdata.content"
                 class="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-yellow-500" rows="4"
-                placeholder="Message"></textarea>
+                placeholder="Nội dung"></textarea>
             </div>
             <div class="flex justify-center">
               <button
                 class="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700 transition flex items-center">
-                Send Message
+                Gửi
                 <div v-if="loading" class="ml-2 border-t-2 border-white border-solid w-4 h-4 animate-spin rounded-full">
                 </div>
               </button>
