@@ -176,9 +176,9 @@
         </div>
         <AddressBook 
           @address-selected="onAddressSelected"
-          @address-added="refreshAddresses"
-          @address-updated="refreshAddresses"
-          @address-deleted="refreshAddresses"
+          @address-added="onAddressAdded"
+          @address-updated="onAddressUpdated"
+          @address-deleted="onAddressDeleted"
         />
       </div>
     </div>
@@ -315,22 +315,26 @@ const fetchAddresses = async () => {
   }
 };
 
-const selectAddress = (addr: Address) => {
+const selectAddress = async (addr: Address) => {
   selectedAddressId.value = addr.id;
   phoneNumber.value = addr.phone_number;
   address.value = addr.address;
+  await refreshAddresses();
 };
 
 const openAddressBook = () => {
   showAddressModal.value = true;
+  refreshAddresses();
 };
 
 const closeAddressModal = () => {
   showAddressModal.value = false;
+  refreshAddresses();
 };
 
-const onAddressSelected = (addr: Address) => {
-  selectAddress(addr);
+const onAddressSelected = async (addr: Address) => {
+  await selectAddress(addr);
+  await refreshAddresses();
   closeAddressModal();
 };
 
@@ -468,13 +472,43 @@ const refreshAddresses = async () => {
     if (!selectedAddressId.value) {
       const defaultAddress = data.find((addr: Address) => addr.is_default);
       if (defaultAddress) {
-        selectAddress(defaultAddress);
+        await selectAddress(defaultAddress);
       }
     }
   } catch (error) {
     console.error('Error refreshing addresses:', error);
     toast.error('Không thể cập nhật danh sách địa chỉ');
   }
+};
+
+// Thêm watch effect để theo dõi thay đổi địa chỉ
+watch([phoneNumber, address], () => {
+  if (!selectedAddressId.value) {
+    // Nếu đang nhập địa chỉ mới (không phải từ danh sách), không cần refresh
+    return;
+  }
+  // Nếu đang chọn địa chỉ từ danh sách, refresh lại để cập nhật
+  refreshAddresses();
+});
+
+// Thêm watch effect để theo dõi thay đổi selectedAddressId
+watch(selectedAddressId, (newId) => {
+  if (newId) {
+    refreshAddresses();
+  }
+});
+
+// Thêm các hàm xử lý sự kiện mới
+const onAddressAdded = async () => {
+  await refreshAddresses();
+};
+
+const onAddressUpdated = async () => {
+  await refreshAddresses();
+};
+
+const onAddressDeleted = async () => {
+  await refreshAddresses();
 };
 
 onMounted(async () => {

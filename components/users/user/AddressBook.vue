@@ -10,8 +10,8 @@
       <div v-for="address in addresses" :key="address.id" class="transition-transform duration-200 hover:transform hover:-translate-y-1">
         <div class="p-4 bg-white rounded-lg shadow-md border border-gray-200">
           <div class="flex justify-between items-start mb-3">
-            <h3 class="text-lg font-semibold">Địa chỉ #{{ address.id }}</h3>
-            <span v-if="address.is_default" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">
+            <h3 class="text-lg font-semibold truncate">Địa chỉ #{{ address.id }}</h3>
+            <span v-if="address.is_default" class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded truncate">
               Mặc định
             </span>
           </div>
@@ -163,6 +163,14 @@ import { useToast } from 'vue-toastification'
 const router = useRouter()
 const toast = useToast()
 
+// Define emits
+const emit = defineEmits<{
+  (e: 'address-selected', address: Address): void
+  (e: 'address-added'): void
+  (e: 'address-updated'): void
+  (e: 'address-deleted'): void
+}>()
+
 interface Address {
   id: number
   user: number
@@ -239,12 +247,10 @@ const handleEditSubmit = async () => {
     })
 
     if (response.ok) {
-      const updatedAddress = await response.json()
-      addresses.value = addresses.value.map(addr => 
-        addr.id === editingAddressId.value ? updatedAddress : addr
-      )
+      await fetchAddresses()
       toast.success('Cập nhật địa chỉ thành công')
       closeEditModal()
+      emit('address-updated')
     } else {
       throw new Error('Failed to update address')
     }
@@ -277,8 +283,9 @@ const handleDeleteAddress = async (id: number) => {
                 })
 
                 if (response.ok) {
-                  addresses.value = addresses.value.filter(address => address.id !== id)
+                  await fetchAddresses()
                   toast.success('Xóa địa chỉ thành công')
+                  emit('address-deleted')
                 } else {
                   throw new Error('Failed to delete address')
                 }
@@ -330,10 +337,10 @@ const handleAddSubmit = async () => {
     })
 
     if (response.ok) {
-      const newAddress = await response.json()
-      addresses.value.push(newAddress)
+      await fetchAddresses()
       toast.success('Thêm địa chỉ thành công')
       closeAddModal()
+      emit('address-added')
     } else {
       throw new Error('Failed to add address')
     }
@@ -343,8 +350,8 @@ const handleAddSubmit = async () => {
   }
 }
 
-const handleAddAddress = () => {
-  openAddModal()
+const selectAddress = (address: Address) => {
+  emit('address-selected', address)
 }
 
 onMounted(() => {

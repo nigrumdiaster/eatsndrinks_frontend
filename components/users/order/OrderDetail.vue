@@ -49,6 +49,8 @@
 
     <div class="mt-6 p-4 bg-gray-100 rounded-lg text-lg font-semibold text-right">
       Tổng cộng: {{ formatPrice(totalPrice) }}
+      <br>
+      Thành tiền: {{ formatPrice(order?.total_price || 0) }}
     </div>
   </div>
 </template>
