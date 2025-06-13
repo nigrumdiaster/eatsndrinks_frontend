@@ -64,6 +64,36 @@
             <p class="mt-6 text-lg text-gray-600">
               {{ product.description }}
             </p>
+
+            <!-- Related Combos Section -->
+            <div v-if="relatedCombos.length > 0" class="mt-8">
+              <h3 class="text-xl font-semibold mb-4">Combo Liên Quan</h3>
+              <div class="space-y-4">
+                <div v-for="combo in relatedCombos" :key="combo.id" class="bg-gray-50 p-4 rounded-lg">
+                  <div class="flex justify-between items-start">
+                    <div>
+                      <h4 class="font-semibold text-lg">{{ combo.name }}</h4>
+                      <p class="text-gray-600 text-sm">{{ combo.description }}</p>
+                      <div class="mt-2">
+                        <p class="text-sm">Sản phẩm trong combo:</p>
+                        <ul class="list-disc list-inside text-sm text-gray-600">
+                          <li v-for="item in combo.items" :key="item.id">
+                            <NuxtLink :to="`/product/${item.product}`" class="hover:text-blue-600 transition-colors">
+                              {{ item.product_name }} ({{ item.quantity }}x)
+                            </NuxtLink>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="text-right">
+                      <p class="text-gray-500 line-through">{{ formatPrice(combo.total_original_price) }}</p>
+                      <p class="text-green-600 font-semibold">{{ formatPrice(combo.total_discounted_price) }}</p>
+                      <p class="text-sm text-green-600">Tiết kiệm: {{ formatPrice(combo.discount_amount) }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div v-else>Loading...</div>
   
@@ -123,6 +153,27 @@
     flash_sale_end?: string
   }
   
+  interface ComboItem {
+    id: number;
+    product: number;
+    product_name: string;
+    product_price: string;
+    quantity: number;
+  }
+  
+  interface Combo {
+    id: number;
+    name: string;
+    description: string;
+    discount_amount: string;
+    is_active: boolean;
+    created_at: string;
+    updated_at: string;
+    items: ComboItem[];
+    total_original_price: number;
+    total_discounted_price: number;
+  }
+  
   const slides = ref<string[]>([])
   const activeIndex = ref<number>(0)
   const product = ref<Product | null>(null)
@@ -134,6 +185,7 @@
   const router = useRouter()
   const productId = route.params.id
   const countdown = ref<string | null>(null)
+  const relatedCombos = ref<Combo[]>([])
   let countdownInterval: any = null
   
   function formatPrice(price: string | number) {
@@ -187,7 +239,20 @@
     }
   }
   
-  onMounted(fetchProductData)
+  const fetchRelatedCombos = async () => {
+    try {
+      const response = await useApiFetch<Combo[]>(`/catalogue/products/${productId}/related-combos/`);
+      if (response) {
+        relatedCombos.value = response;
+      }
+    } catch (error) {
+      console.error('Lỗi khi tải combos liên quan:', error);
+    }
+  };
+  
+  onMounted(async () => {
+    await Promise.all([fetchProductData(), fetchRelatedCombos()]);
+  })
   
   onBeforeUnmount(() => {
     clearInterval(countdownInterval)

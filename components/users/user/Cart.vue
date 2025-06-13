@@ -50,8 +50,48 @@
             <td class="p-2">{{ formatPrice(totalPrice) }}</td>
             <td></td>
           </tr>
+          <tr v-if="applicableCombos.length > 0" class="border-t">
+            <td colspan="3" class="text-center p-2">Tổng giảm giá từ combo:</td>
+            <td class="p-2 text-green-600">{{ formatPrice(totalDiscount) }}</td>
+            <td></td>
+          </tr>
+
+          <!-- Combo Section -->
+          <tr class="border-t font-semibold">
+            <td colspan="3" class="text-center p-2">Combo Giảm Giá</td>
+            <td class="p-2">{{ formatPrice(totalPrice - totalDiscount) }} </td>
+            <td></td>
+          </tr>
         </tbody>
       </table>
+
+      <!-- Combo Section -->
+      <div v-if="applicableCombos.length > 0" class="mt-6 border-t pt-4">
+        <h2 class="text-xl font-semibold mb-4">Combo Giảm Giá</h2>
+        <div class="space-y-4">
+          <div v-for="combo in applicableCombos" :key="combo.id" class="bg-gray-50 p-4 rounded-lg">
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="font-semibold text-lg">{{ combo.name }}</h3>
+                <p class="text-gray-600 text-sm">{{ combo.description }}</p>
+                <div class="mt-2">
+                  <p class="text-sm">Sản phẩm trong combo:</p>
+                  <ul class="list-disc list-inside text-sm text-gray-600">
+                    <li v-for="item in combo.items" :key="item.id">
+                      {{ item.product_name }} ({{ item.quantity }}x)
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="text-right">
+                <p class="text-gray-500 line-through">{{ formatPrice(combo.total_original_price) }}</p>
+                <p class="text-green-600 font-semibold">{{ formatPrice(combo.total_discounted_price) }}</p>
+                <p class="text-sm text-green-600">Tiết kiệm: {{ formatPrice(combo.discount_amount) }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Nếu giỏ hàng trống -->
@@ -85,8 +125,6 @@
     </div>
   </div>
 
-
-
 </template>
 
 <script lang="ts" setup>
@@ -94,13 +132,41 @@ import { ref, onMounted, computed } from "vue";
 import { useCartStore } from "@/stores/cart";
 import { useToast } from "vue-toastification";
 
+interface ComboItem {
+  id: number;
+  product: number;
+  product_name: string;
+  product_price: string;
+  quantity: number;
+}
+
+interface Combo {
+  id: number;
+  name: string;
+  description: string;
+  discount_amount: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  items: ComboItem[];
+  total_original_price: number;
+  total_discounted_price: number;
+}
+
 const cartStore = useCartStore();
 const isLoading = ref(true);
 const toast = useToast();
 const showConfirmDelete = ref(false);
+const applicableCombos = ref<Combo[]>([]);
 
 const totalPrice = computed(() => {
   return cart.items.reduce((total, item) => total + item.quantity * item.product_price, 0);
+});
+
+const totalDiscount = computed(() => {
+  return applicableCombos.value.reduce((total, combo) => {
+    return total + parseFloat(combo.discount_amount);
+  }, 0);
 });
 
 const { cart, fetchCart, removeItem, clearCart } = cartStore;
@@ -114,8 +180,21 @@ const confirmDeleteAll = async () => {
 
 onMounted(async () => {
   await cartStore.fetchCart();
+  await fetchApplicableCombos();
   isLoading.value = false;
 });
+
+const fetchApplicableCombos = async () => {
+  try {
+    const response = await useApiFetch<Combo[]>('/cart/applicable-combos/');
+    if (response) {
+      applicableCombos.value = response;
+    }
+  } catch (error) {
+    console.error('Lỗi khi tải combos:', error);
+    toast.error('Không thể tải danh sách combo giảm giá');
+  }
+};
 
 let updateTimeout: NodeJS.Timeout | null = null;
 

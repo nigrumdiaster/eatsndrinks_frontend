@@ -32,6 +32,14 @@
                 <td colspan="4" class="text-right p-2">Tổng tiền:</td>
                 <td class="p-2 text-right">{{ formatPrice(totalPrice) }}</td>
               </tr>
+              <tr v-if="totalDiscount > 0" class="border-t border-yellow-400 font-semibold bg-yellow-100">
+                <td colspan="4" class="text-right p-2">Giảm giá từ combo:</td>
+                <td class="p-2 text-right text-green-600">-{{ formatPrice(totalDiscount) }}</td>
+              </tr>
+              <tr class="border-t-4 border-yellow-400 font-semibold bg-yellow-100">
+                <td colspan="4" class="text-right p-2">Thành tiền:</td>
+                <td class="p-2 text-right">{{ formatPrice(totalPrice - totalDiscount) }}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -210,6 +218,27 @@ interface Address {
   is_default: boolean;
 }
 
+interface ComboItem {
+  id: number;
+  product: number;
+  product_name: string;
+  product_price: string;
+  quantity: number;
+}
+
+interface Combo {
+  id: number;
+  name: string;
+  description: string;
+  discount_amount: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  items: ComboItem[];
+  total_original_price: number;
+  total_discounted_price: number;
+}
+
 declare global {
   interface Window {
     paypal: any;
@@ -374,7 +403,7 @@ const renderPayPalButton = () => {
           purchase_units: [
             {
               amount: {
-                value: (totalPrice.value / 24000).toFixed(2), // Chuyển VND sang USD (giả sử 1 USD = 24,000 VND)
+                value: ((totalPrice.value - totalDiscount.value) / 24000).toFixed(2), // Chuyển VND sang USD (giả sử 1 USD = 24,000 VND)
               },
             },
           ],
@@ -511,9 +540,39 @@ const onAddressDeleted = async () => {
   await refreshAddresses();
 };
 
+interface ComboItem {
+  id: number;
+  product: number;
+  product_name: string;
+  product_price: string;
+  quantity: number;
+}
+
+interface Combo {
+  id: number;
+  name: string;
+  description: string;
+  discount_amount: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  items: ComboItem[];
+  total_original_price: number;
+  total_discounted_price: number;
+}
+
+const applicableCombos = ref<Combo[]>([]);
+
+const totalDiscount = computed(() => {
+  return applicableCombos.value.reduce((total, combo) => {
+    return total + parseFloat(combo.discount_amount);
+  }, 0);
+});
+
 onMounted(async () => {
   isLoading.value = true;
   await Promise.all([fetchCart(), fetchUser(), fetchAddresses()]);
+  await fetchApplicableCombos();
   isLoading.value = false;
 
   // Thêm event listener cho phím Escape
@@ -529,6 +588,18 @@ onUnmounted(() => {
 const handleEscapeKey = (event: KeyboardEvent) => {
   if (event.key === 'Escape' && showAddressModal.value) {
     closeAddressModal();
+  }
+};
+
+const fetchApplicableCombos = async () => {
+  try {
+    const response = await useApiFetch<Combo[]>('/cart/applicable-combos/');
+    if (response) {
+      applicableCombos.value = response;
+    }
+  } catch (error) {
+    console.error('Lỗi khi tải combos:', error);
+    toast.error('Không thể tải danh sách combo giảm giá');
   }
 };
 </script>
