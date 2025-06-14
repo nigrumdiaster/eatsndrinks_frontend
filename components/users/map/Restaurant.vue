@@ -60,7 +60,6 @@ const filteredRestaurants = computed(() =>
 
 // Add markers to the map
 const addMarkersToMap = () => {
-  console.log('Adding markers to the map:', restaurants.value);
 
   restaurants.value.forEach((restaurant) => {
     const customIcon = L.divIcon({
@@ -260,7 +259,6 @@ const onMapReady = () => {
   // Add the "Locate Me" button to the map
   createLocateMeControl().addTo(map1.value.leafletObject);
 
-  console.log('Map is ready:', map1.value.leafletObject);
 
   // Add markers if restaurants data is already fetched
   if (restaurants.value.length > 0) {

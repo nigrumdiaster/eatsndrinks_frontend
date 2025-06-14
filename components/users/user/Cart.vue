@@ -28,7 +28,7 @@
 
             <td class="p-2 text-center">
               <div class="flex items-center justify-center space-x-2">
-                <!-- ✅ Input cho phép nhập số -->
+                <!--  Input cho phép nhập số -->
                 <input type="number" class="w-12 text-center border rounded" :value="item.quantity" min="1"
                   @change="(event) => updateQuantity(item.id, Number((event.target as HTMLInputElement).value))" />
               </div>
@@ -198,7 +198,7 @@ const fetchApplicableCombos = async () => {
 
 let updateTimeout: NodeJS.Timeout | null = null;
 
-// ✅ Cập nhật số lượng sản phẩm
+//  Cập nhật số lượng sản phẩm
 const updateQuantity = (itemId: number, newQuantity: number) => {
   if (newQuantity < 1) return;
 

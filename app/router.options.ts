@@ -24,7 +24,7 @@ export default <RouterConfig>{
             component: () => import('~/pages/users/Menu.vue'),
         },
         {
-            name: 'product-id', // ✅ Dynamic route for product details
+            name: 'product-id', //  Dynamic route for product details
             path: '/product/:id', // Dynamic segment ":id"
             component: () => import('~/pages/users/product/[id].vue'),
         },

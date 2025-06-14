@@ -16,7 +16,7 @@ export const useAuthStore = defineStore("auth", () => {
   const accessToken = useCookie<string | null>("access_token");
   const refreshToken = useCookie<string | null>("refresh_token");
   const user = ref<User | null>(null);
-  const isAdmin = ref<boolean>(false); // ✅ Thêm biến kiểm tra admin
+  const isAdmin = ref<boolean>(false); //  Thêm biến kiểm tra admin
   const isRefreshing = ref<boolean>(false);
 
   const isAuthenticated = computed(() => !!accessToken.value);
@@ -36,11 +36,11 @@ export const useAuthStore = defineStore("auth", () => {
         throw new Error("Invalid response from server");
       }
 
-      // ✅ Lưu token vào cookies
+      //  Lưu token vào cookies
       accessToken.value = data.access;
       refreshToken.value = data.refresh;
 
-      // ✅ Lấy thông tin user
+      //  Lấy thông tin user
       await fetchUser();
     } catch (err) {
       console.error("Login failed:", err);
@@ -59,9 +59,8 @@ export const useAuthStore = defineStore("auth", () => {
       if (!data) throw new Error("User data not found");
 
       user.value = data;
-      console.log("user value", user.value);
 
-      // ✅ Kiểm tra quyền admin
+      //  Kiểm tra quyền admin
       await checkAdmin();
     } catch (err) {
       console.error("Failed to fetch user:", err);
@@ -78,7 +77,7 @@ export const useAuthStore = defineStore("auth", () => {
         }
       );
 
-      isAdmin.value = data.is_admin; // ✅ Cập nhật isAdmin từ API
+      isAdmin.value = data.is_admin; //  Cập nhật isAdmin từ API
     } catch (err) {
       console.error("Failed to check admin status:", err);
       isAdmin.value = false;

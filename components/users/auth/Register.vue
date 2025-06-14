@@ -82,7 +82,6 @@ const handleRegister = async () => {
       }),
     });
 
-    console.log("Đăng ký thành công:", response);
     // TODO: Chuyển hướng người dùng sau khi đăng ký thành công
     toast.success("Đăng ký thành công! 🎉");
     navigateTo("/login");

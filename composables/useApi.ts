@@ -18,14 +18,14 @@ export const useApiFetch = async <T>(endpoint: string, options: RequestInit = {}
     });
 
     if (!response.ok) {
-      // ✅ Xử lý khi token hết hạn
+      //  Xử lý khi token hết hạn
       if (response.status === 401) {
         if (!authStore.isRefreshing) {
           authStore.isRefreshing = true;
           try {
             await authStore.refreshAccessToken();
             authStore.isRefreshing = false;
-            return useApiFetch<T>(endpoint, options); // ✅ Gọi lại API sau khi làm mới token
+            return useApiFetch<T>(endpoint, options); //  Gọi lại API sau khi làm mới token
           } catch (refreshError) {
             authStore.isRefreshing = false;
             throw new Error("Unauthorized: Refresh token failed");
@@ -37,7 +37,6 @@ export const useApiFetch = async <T>(endpoint: string, options: RequestInit = {}
       throw new Error(`API Error: ${response.status} - ${response.statusText}`);
     }
 
-    // ✅ Kiểm tra nếu phản hồi rỗng thì trả về object trống
     const text = await response.text();
     return text ? (JSON.parse(text) as T) : ({} as T);
   } catch (error) {

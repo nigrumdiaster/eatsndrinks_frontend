@@ -7,5 +7,5 @@
 
 <script setup>
 import Header from '~/components/users/Header.vue';
-import AuthRegister from '~/components/users/auth/Register.vue';  // ✅ Bổ sung import
+import AuthRegister from '~/components/users/auth/Register.vue';  //  Bổ sung import
 </script>

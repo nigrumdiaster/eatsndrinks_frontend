@@ -10,12 +10,12 @@ export default defineNuxtPlugin(async () => {
 
   try {
     if (refreshToken.value) {
-      // ✅ Tự động refresh token
+      //  Tự động refresh token
       await authStore.refreshAccessToken();
     }
 
     if (accessToken.value) {
-      // ✅ Lấy thông tin user nếu có access token
+      //  Lấy thông tin user nếu có access token
       await authStore.fetchUser();
     }
   } catch (error) {

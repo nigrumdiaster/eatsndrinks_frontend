@@ -11,5 +11,5 @@ definePageMeta({
 });
 
 import Header from '~/components/users/Header.vue';
-import AddressBook from '~/components/users/user/AddressBook.vue'; // ✅ Nếu file là Profile.vue
+import AddressBook from '~/components/users/user/AddressBook.vue';
 </script>

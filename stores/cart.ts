@@ -25,24 +25,23 @@ export const useCartStore = defineStore("cart", () => {
     id: 0,
     user: 0,
     items: [],
-  }); // ✅ Khởi tạo với giá trị mặc định thay vì null
+  }); //  Khởi tạo với giá trị mặc định thay vì null
 
   const loading = ref(false);
 
-  // ✅ Tính tổng số lượng sản phẩm trong giỏ hàng
+  //  Tính tổng số lượng sản phẩm trong giỏ hàng
   const totalItems = computed(() => {
     return cart.items.reduce((sum, item) => sum + item.quantity, 0);
   });
 
-  // ✅ Lấy dữ liệu giỏ hàng từ API
+  //  Lấy dữ liệu giỏ hàng từ API
   const fetchCart = async () => {
     try {
       loading.value = true;
       const data = await useApiFetch<Cart>("/cart/user/cart/");
-      console.log("Cart:", data);
 
       if (data) {
-        Object.assign(cart, data); // ✅ Cập nhật dữ liệu mà không thay đổi reactive object
+        Object.assign(cart, data); //  Cập nhật dữ liệu mà không thay đổi reactive object
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
@@ -54,7 +53,7 @@ export const useCartStore = defineStore("cart", () => {
   const addToCart = async (productId: number, quantity: number = 1) => {
     const authStore = useAuthStore();
   
-    // ✅ Kiểm tra nếu chưa đăng nhập
+    //  Kiểm tra nếu chưa đăng nhập
     if (!authStore.accessToken) {
       toast.error("Bạn cần đăng nhập để thêm sản phẩm vào giỏ hàng!");
       return;
@@ -75,9 +74,8 @@ export const useCartStore = defineStore("cart", () => {
       });
   
       if (response) {
-        console.log("Sản phẩm đã thêm vào giỏ hàng:", response);
   
-        // ✅ Cập nhật giỏ hàng
+        //  Cập nhật giỏ hàng
         const existingItem = cart.items.find((item) => item.product === response.product);
         if (existingItem) {
           existingItem.quantity += response.quantity;
@@ -85,7 +83,7 @@ export const useCartStore = defineStore("cart", () => {
           cart.items.push(response);
         }
   
-        // ✅ Hiển thị thông báo thành công
+        //  Hiển thị thông báo thành công
         toast.success("Đã thêm sản phẩm vào giỏ hàng");
       }
     } catch (error) {
@@ -96,23 +94,23 @@ export const useCartStore = defineStore("cart", () => {
   
 
 
-  // ✅ Xóa sản phẩm khỏi giỏ hàng
+  //  Xóa sản phẩm khỏi giỏ hàng
   const removeItem = async (itemId: number) => {
     try {
       await useApiFetch(`/cart/remove/${itemId}/`, { method: "DELETE" });
 
-      cart.items = cart.items.filter((item) => item.id !== itemId); // ✅ Cập nhật lại danh sách sản phẩm
+      cart.items = cart.items.filter((item) => item.id !== itemId); //  Cập nhật lại danh sách sản phẩm
     } catch (error) {
       console.error("Error removing item:", error);
     }
   };
 
-  // ✅ Xóa toàn bộ giỏ hàng
+  //  Xóa toàn bộ giỏ hàng
   const clearCart = async () => {
     try {
       await useApiFetch("/cart/user/cart/", { method: "DELETE" });
 
-      // ✅ Giữ nguyên id và user, chỉ xóa sản phẩm
+      //  Giữ nguyên id và user, chỉ xóa sản phẩm
       cart.items = [];
     } catch (error) {
       console.error("Error clearing cart:", error);

@@ -411,7 +411,6 @@ const renderPayPalButton = () => {
       },
       onApprove: function (data: any, actions: any) {
         return actions.order.capture().then(function (details: any) {
-          console.log("✅ Thanh toán thành công:", details);
           toast.success(`Cảm ơn ${details.payer.name.given_name}, thanh toán thành công!`);
           placeOrder(true); // Đặt hàng, đánh dấu là đã thanh toán
         });

@@ -11,7 +11,7 @@ definePageMeta({
 });
 
 import Header from '~/components/users/Header.vue';
-import UserUpdate from '~/components/users/user/Update.vue'; // ✅ Nếu file là Update.vue
+import UserUpdate from '~/components/users/user/Update.vue';
 </script>
 
 <style>
