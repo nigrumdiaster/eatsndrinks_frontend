@@ -85,7 +85,7 @@ async function send() {
 
     const response = await fetch(`${config.public.apiBase}/contact/contacts/`, {
       method: "POST",
-      headers: { Authorization: `Bearer ${token.value}`,
+      headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formdata),
