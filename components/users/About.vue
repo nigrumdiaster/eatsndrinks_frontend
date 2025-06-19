@@ -18,7 +18,7 @@
             Dù bạn muốn dùng bữa tại chỗ, đặt mang về hay giao tận nơi, chúng tôi luôn sẵn sàng phục vụ nhanh chóng và
             chu đáo.
           </p>
-          <a href="#" class="bg-yellow-400 text-gray-900 px-6 py-3 rounded-lg hover:bg-yellow-500 transition">
+          <a href="/about" class="bg-yellow-400 text-gray-900 px-6 py-3 rounded-lg hover:bg-yellow-500 transition">
             Tìm hiểu thêm
           </a>
         </div>

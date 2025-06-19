@@ -61,19 +61,19 @@
 
          <!-- Social Media Icons -->
             <div class="flex space-x-4 mt-4">
-                <a href="#" class="text-white">
+                <a href="https://x.com/svspkt" class="text-white">
                     <img src="public\icons\twitter-round-svgrepo-com.svg" alt="Contact Icon" class="w-10 h-10" svg-white>
                     <i class="bi bi-twitter text-2xl"></i>
                 </a>
-                <a href="#" class="text-white">
+                <a href="https://www.facebook.com/dhspkt.hcmute/?locale=vi_VN" class="text-white">
                     <img src="public\icons\facebook-svgrepo-com.svg" alt="Contact Icon" class="w-10 h-10" svg-white>
                     <i class="bi bi-facebook text-2xl"></i>
                 </a>
-                <a href="#" class="text-white">
+                <a href="https://vn.linkedin.com/company/ho-chi-minh-university-of-technology-and-education" class="text-white">
                     <img src="public\icons\linkedin-round-svgrepo-com.svg" alt="Contact Icon" class="w-10 h-10" svg-white>
                     <i class="bi bi-linkedin text-2xl"></i>
                 </a>
-                <a href="#" class="text-white">
+                <a href="https://www.youtube.com/@UTETVChannel" class="text-white">
                     <img src="public\icons\youtube-round-svgrepo-com.svg" alt="Contact Icon" class="w-10 h-10" svg-white>
                     <i class="bi bi-youtube text-2xl"></i>
                 </a>
