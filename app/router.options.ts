@@ -83,5 +83,10 @@ export default <RouterConfig>{
             path: '/address',
             component: () => import('~/pages/users/user/AddressBook.vue'),
         },
+        {
+            name: 'chatbot',
+            path: '/chatbot',
+            component: () => import('~/pages/users/Chatbot.vue'),
+        },
     ]
 };

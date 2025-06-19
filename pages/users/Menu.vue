@@ -3,6 +3,7 @@
     <Header />
     <Menu />
     <Footer />
+    <FloatingChatbot />
   </div>
 </template>
 
@@ -10,4 +11,5 @@
 import Header from '~/components/users/Header.vue';
 import Footer from '~/components/users/Footer.vue';
 import Menu from '~/components/users/Menu.vue';
+import FloatingChatbot from '~/components/users/FloatingChatbot.vue';
 </script>

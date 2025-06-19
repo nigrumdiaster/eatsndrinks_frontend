@@ -7,6 +7,7 @@
     <About />
     <Contact />
     <Footer />
+    <FloatingChatbot />
   </div>
 </template>
 
@@ -18,4 +19,5 @@ import ProductTabs from '~/components/users/product/Tabs.vue';  //  Import đún
 import About from '~/components/users/About.vue';
 import Contact from '~/components/users/Contact.vue';
 import Footer from '~/components/users/Footer.vue';
+import FloatingChatbot from '~/components/users/FloatingChatbot.vue';
 </script>

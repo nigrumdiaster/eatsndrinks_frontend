@@ -34,8 +34,10 @@
               <!-- User Profile Dropdown (When Logged In) -->
               <div v-if="isAuthenticated" class="relative">
                 <div @click="toggleDropdown" class="flex items-center cursor-pointer space-x-2">
-                  <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300">
-                    <i class="bi bi-person text-2xl text-gray-700"></i> <!-- Placeholder Avatar -->
+                  <div class="w-10 h-10 flex items-center justify-center rounded-ful">
+                    <svg class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
                   </div>
                   <span class="text-gray-800 font-semibold">{{ user?.first_name }} {{ user?.last_name }}</span>
                 </div>
@@ -79,6 +81,7 @@ const isMenuOpen = ref(false);
 const menuItems = [
   { label: "Trang chủ", path: "/" },
   { label: "Thực đơn", path: "/menu" },
+  { label: "Chatbot", path: "/Chatbot" },
   { label: "Về chúng tôi", path: "/about" },
   { label: "Chi nhánh", path: "/restaurant" }
 ];

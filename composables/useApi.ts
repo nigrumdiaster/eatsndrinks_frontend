@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/stores/auth";
 import { useRuntimeConfig } from "#app";
 
-export const useApiFetch = async <T>(endpoint: string, options: RequestInit = {}): Promise<T> => {
+export const useApiFetch = async <T>(endpoint: string, options: RequestInit = {}, retryCount: number = 0): Promise<T> => {
   const config = useRuntimeConfig();
   const apiBase = config.public.apiBase;
   const authStore = useAuthStore(); // Lấy trạng thái đăng nhập
@@ -19,13 +19,13 @@ export const useApiFetch = async <T>(endpoint: string, options: RequestInit = {}
 
     if (!response.ok) {
       //  Xử lý khi token hết hạn
-      if (response.status === 401) {
+      if (response.status === 401 && retryCount < 1) {
         if (!authStore.isRefreshing) {
           authStore.isRefreshing = true;
           try {
             await authStore.refreshAccessToken();
             authStore.isRefreshing = false;
-            return useApiFetch<T>(endpoint, options); //  Gọi lại API sau khi làm mới token
+            return useApiFetch<T>(endpoint, options, retryCount + 1); //  Gọi lại API sau khi làm mới token với retry count
           } catch (refreshError) {
             authStore.isRefreshing = false;
             throw new Error("Unauthorized: Refresh token failed");
