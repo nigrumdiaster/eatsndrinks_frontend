@@ -24,7 +24,7 @@
       v-if="isChatOpen"
       class="absolute bottom-20 right-0 w-80 h-96 bg-white rounded-lg shadow-2xl border border-gray-200 overflow-hidden"
     >
-      <ChatbotComponent />
+      <ChatbotComponent :fullPage="false" />
     </div>
 
     <!-- Tooltip -->

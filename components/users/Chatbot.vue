@@ -1,5 +1,5 @@
 <template>
-  <div :class="['flex flex-col bg-white rounded-lg shadow-lg', fullPage ? 'full-chatbot' : '']" :style="fullPage ? '' : 'max-height: 600px;'">
+  <div :class="['flex flex-col bg-white rounded-lg shadow-lg', fullPage ? 'full-chatbot' : 'h-full']">
     <!-- Chat Header -->
     <div class="flex items-center justify-between p-4 border-b border-gray-200">
       <div class="flex items-center gap-3">
