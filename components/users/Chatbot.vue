@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full bg-white rounded-lg shadow-lg" style="max-height: 600px;">
+  <div :class="['flex flex-col bg-white rounded-lg shadow-lg', fullPage ? 'full-chatbot' : '']" :style="fullPage ? '' : 'max-height: 600px;'">
     <!-- Chat Header -->
     <div class="flex items-center justify-between p-4 border-b border-gray-200">
       <div class="flex items-center gap-3">
@@ -163,6 +163,14 @@ import { useChatbot, type ChatMessage, type ChatRequest } from '~/composables/us
 import { useCartStore } from '~/stores/cart'
 import { useChatbotStore } from '~/stores/chatbot'
 import { useRuntimeConfig } from '#app'
+import { defineProps } from 'vue'
+
+const props = defineProps({
+  fullPage: {
+    type: Boolean,
+    default: false
+  }
+})
 
 const config = useRuntimeConfig()
 const apiBase = config.public.apiBase
@@ -336,4 +344,11 @@ const getImageUrl = (img: string) => {
   if (img.startsWith('http')) return img
   return apiBase + img
 }
-</script> 
+</script>
+
+<style scoped>
+.full-chatbot {
+  height: 70vh;
+  max-height: none;
+}
+</style> 

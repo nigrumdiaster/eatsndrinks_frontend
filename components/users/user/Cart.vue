@@ -77,7 +77,8 @@
                 <div class="mt-2">
                   <p class="text-sm">Sản phẩm trong combo:</p>
                   <ul class="list-disc list-inside text-sm text-gray-600">
-                    <li v-for="item in combo.items" :key="item.id">
+                    <li v-for="item in combo.items" :key="item.id" class="flex items-center gap-2 mb-1">
+                      <img v-if="item.mainimage" :src="getImageUrl(item.mainimage)" alt="Ảnh sản phẩm" class="w-12 h-12 object-cover rounded" />
                       {{ item.product_name }} ({{ item.quantity }}x)
                     </li>
                   </ul>
@@ -131,6 +132,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useCartStore } from "@/stores/cart";
 import { useToast } from "vue-toastification";
+import { useRuntimeConfig } from '#app'
 
 interface ComboItem {
   id: number;
@@ -138,6 +140,7 @@ interface ComboItem {
   product_name: string;
   product_price: string;
   quantity: number;
+  mainimage?: string;
 }
 
 interface Combo {
@@ -158,6 +161,8 @@ const isLoading = ref(true);
 const toast = useToast();
 const showConfirmDelete = ref(false);
 const applicableCombos = ref<Combo[]>([]);
+const config = useRuntimeConfig()
+const apiBase = config.public.apiBase
 
 const totalPrice = computed(() => {
   return cart.items.reduce((total, item) => total + item.quantity * item.product_price, 0);
@@ -237,6 +242,12 @@ function formatPrice(price: string | number) {
     style: "currency",
     currency: "VND"
   });
+}
+
+function getImageUrl(img: string) {
+  if (!img) return ''
+  if (img.startsWith('http://') || img.startsWith('https://')) return img
+  return apiBase + img
 }
 
 </script>

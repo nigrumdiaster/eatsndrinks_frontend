@@ -3,7 +3,7 @@
     <Header />
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div class="bg-white rounded-lg shadow-lg overflow-hidden">
-        <Chatbot class="w-full h-full"/>
+        <Chatbot class="w-full h-full" :fullPage="true"/>
       </div>
     </div>
   </div>

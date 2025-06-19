@@ -77,7 +77,8 @@
                       <div class="mt-2">
                         <p class="text-sm">Sản phẩm trong combo:</p>
                         <ul class="list-disc list-inside text-sm text-gray-600">
-                          <li v-for="item in combo.items" :key="item.id">
+                          <li v-for="item in combo.items" :key="item.id" class="flex items-center gap-2 mb-1">
+                            <img v-if="item.mainimage" :src="getImageUrl(item.mainimage)" alt="Ảnh sản phẩm" class="w-12 h-12 object-cover rounded" />
                             <NuxtLink :to="`/product/${item.product}`" class="hover:text-blue-600 transition-colors">
                               {{ item.product_name }} ({{ item.quantity }}x)
                             </NuxtLink>
@@ -122,13 +123,14 @@
   </template>
   
   <script lang="ts" setup>
-  import { ref, onMounted, onBeforeUnmount } from 'vue'
+  import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
   import { useRoute, useRouter } from 'vue-router'
   import { useToast } from 'vue-toastification'
   import { useCartStore } from '@/stores/cart'
   import SameType from '~/components/users/product/SameType.vue'
   import dayjs from 'dayjs'
   import duration from 'dayjs/plugin/duration'
+  import { useRuntimeConfig } from '#app'
   dayjs.extend(duration)
   
   interface ProductImage {
@@ -159,6 +161,7 @@
     product_name: string;
     product_price: string;
     quantity: number;
+    mainimage?: string;
   }
   
   interface Combo {
@@ -187,6 +190,8 @@
   const countdown = ref<string | null>(null)
   const relatedCombos = ref<Combo[]>([])
   let countdownInterval: any = null
+  const config = useRuntimeConfig()
+  const apiBase = config.public.apiBase
   
   function formatPrice(price: string | number) {
     return parseFloat(price.toString()).toLocaleString("vi-VN", {
@@ -278,6 +283,13 @@
   
   const setSlide = (index: number) => {
     activeIndex.value = index
+  }
+  
+  // Hàm lấy url ảnh đầy đủ
+  function getImageUrl(img: string) {
+    if (!img) return ''
+    if (img.startsWith('http://') || img.startsWith('https://')) return img
+    return apiBase + img
   }
   </script>
   
