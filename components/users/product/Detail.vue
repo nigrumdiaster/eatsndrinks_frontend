@@ -110,7 +110,8 @@
                       class="h-[50px] flex-1 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700">
                 Thêm vào giỏ hàng
               </button>
-              <button class="h-[50px] flex-1 bg-red-600 text-white rounded-lg hover:bg-red-700">
+              <button @click="product && handleOrderNow(product, quantity)"
+                      class="h-[50px] flex-1 bg-red-600 text-white rounded-lg hover:bg-red-700">
                 Đặt hàng
               </button>
             </div>
@@ -290,6 +291,11 @@
     if (!img) return ''
     if (img.startsWith('http://') || img.startsWith('https://')) return img
     return apiBase + img
+  }
+  
+  function handleOrderNow(product: Product, quantity: number) {
+    addToCart(product, quantity);
+    router.push('/order');
   }
   </script>
   
